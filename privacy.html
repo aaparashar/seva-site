@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>seva — Privacy Policy</title>
 <meta name="description" content="How seva collects, uses and protects your information.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root {
     --bg: #FAF7F2; --surface: #F2EDE5; --text: #1C1C1A; --muted: #7A7570; --accent: #7D9E8C;
@@ -15,7 +17,8 @@
     font: 16px/1.65 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   }
   main { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
-  .brand { font-size: 28px; font-weight: 600; letter-spacing: 2px; margin: 0; }
+  .brand { display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 600; letter-spacing: 2px; margin: 0; color: var(--text); text-decoration: none; }
+  .brand img { width: 40px; height: auto; }
   .rule { width: 32px; height: 1px; background: var(--accent); margin: 8px 0 28px; }
   h1 { font-size: 32px; line-height: 1.2; margin: 0 0 8px; }
   .meta { color: var(--muted); margin: 0 0 32px; }
@@ -35,7 +38,7 @@
 </head>
 <body>
 <main>
-  <p class="brand">seva</p>
+  <a class="brand" href="./"><img src="seva-mark.png" alt="" width="40">seva</a>
   <div class="rule"></div>
 
   <h1>Privacy Policy</h1>
@@ -49,10 +52,11 @@
 
   <h2>Information you give us</h2>
   <ul>
-    <li><strong>Account details.</strong> When you sign in with Apple or Google, we receive your name and email address. If you use Apple's "Hide My Email", we receive a private relay address instead of your real email.</li>
+    <li><strong>Account details.</strong> When you sign in with Apple or Google, we receive your name and email address. If you use Apple's "Hide My Email", we receive a private relay address instead of your real email. For Sign in with Apple, we also keep a token from Apple so we can revoke seva's access when you delete your account.</li>
     <li><strong>Profile.</strong> Your display name and username, which you can change in Profile → Edit profile.</li>
     <li><strong>Your list.</strong> The practitioners and places you save, your ratings, how you found them (for example "friend rec" and who recommended them), and any notes you add.</li>
-    <li><strong>Friends.</strong> The people you follow.</li>
+    <li><strong>Friends.</strong> The people you follow, and anyone you block.</li>
+    <li><strong>Reports.</strong> If you report another user, we record the report and any details you add so we can review it. The person you report isn't told who reported them.</li>
     <li><strong>Interest in upcoming features.</strong> If you join the Book It waitlist, we record that you joined.</li>
     <li><strong>Posts you share to seva.</strong> When you share an Instagram post or web link to seva, we use the link and, where available, the post's caption to identify the business it mentions.</li>
   </ul>
@@ -72,7 +76,7 @@
     <li>To show your list to people who follow you, and to show you which friends saved a practitioner.</li>
     <li>To find nearby practitioners and identify businesses from posts you share.</li>
     <li>To understand interest in features we're building (such as Book It).</li>
-    <li>To prevent abuse and keep the service running.</li>
+    <li>To review reports, enforce our rules and keep the service running.</li>
   </ul>
 
   <h2>What other seva users can see</h2>
@@ -102,7 +106,7 @@
   <p>We don't sell or rent your personal information, and we don't share it for advertising. We may disclose information if required by law or to protect the safety of our users.</p>
 
   <h2>Retention and deletion</h2>
-  <p>We keep your information while your account is active. You can delete your account at any time in <strong>Profile → Delete Account</strong>. This permanently deletes your account, profile, saved list, ratings, notes, follows and waitlist status.</p>
+  <p>We keep your information while your account is active. You can delete your account at any time in <strong>Profile → Delete Account</strong>. This permanently deletes your account, profile, saved list, ratings, notes, follows, blocks and waitlist status, and revokes seva's access to your Apple ID if you used Sign in with Apple. Reports you made about others are kept without your name so we can finish reviewing them.</p>
   <p>Business listings (a salon's name and address, for example) are shared across seva so others can save them too. If you were the first to add a business, the listing stays but is no longer linked to you.</p>
 
   <h2>Security</h2>
