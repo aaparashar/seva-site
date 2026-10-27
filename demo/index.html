@@ -294,7 +294,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   const FRIENDS = {
     priya: { name: 'Priya Shah', user: 'priya', match: 92, followers: 41 },
     maya: { name: 'Maya Chen', user: 'maya.c', match: 78, followers: 27 },
-    jordan: { name: 'Jordan Ellis', user: 'jordanellis', match: null, followers: 12 },
+    jordan: { name: 'Jordan Ellis', user: 'jordanellis', match: null, overlap: 2, followers: 12 },
     // Well-known accounts: a public, verified profile and a private one
     sienna: { name: 'Sienna Brooks', user: 'siennabrooks', match: null, followers: '128k', verified: true, suggested: true, bio: 'Beauty editor, NYC' },
     leah: { name: 'Leah Park', user: 'leahpark', match: 86, followers: 88, private: true },
@@ -355,6 +355,12 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   }
   function seal(size) {
     return '<svg width="' + (size || 14) + '" height="' + (size || 14) + '" viewBox="0 0 24 24" role="img" aria-label="Verified" style="flex:none"><path fill="#2B2A27" d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.5 2-.4 3.2-3.2.5-2 2.5L12 20.6l-2.9 1.4-2-2.5-3.2-.5-.4-3.2-2.5-2 1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z"/><path fill="none" stroke="#FAF7F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 12.3l2.7 2.7L16.2 9.4"/></svg>';
+  }
+  // Progress toward a taste match: filled dot per place you've both rated, out of 3
+  function dots(n) {
+    let d = '';
+    for (let i = 0; i < 3; i++) d += '<span style="width:8px;height:8px;border-radius:4px;border:1.2px solid #2B2A27;background:' + (i < n ? '#2B2A27' : 'transparent') + '"></span>';
+    return '<span style="display:inline-flex;gap:3px;align-items:center" role="img" aria-label="' + Math.min(n, 3) + ' of 3 places in common">' + d + '</span>';
   }
   function followLabel(k) { return S.following[k] ? 'Following' : S.requested[k] ? 'Requested' : 'Follow'; }
 
@@ -549,8 +555,11 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     Object.keys(FRIENDS).filter(k => S.following[k]).forEach(k => {
       const f = FRIENDS[k];
       html += '<button class="row" data-act="friend" data-id="' + k + '">' + avatar(f.name, 40) + '<span class="grow"><span class="name" style="display:flex;gap:4px;align-items:center">' + esc(f.name) + (f.verified ? seal(13) : '') + '</span><span class="sub">@' + esc(f.user) + '</span></span>' +
-        (f.match ? '<span class="pill" style="background:#fff">' + f.match + '% taste match</span>' : '<span class="sub" style="font-size:12px">taste match shows at 3</span>') + '</button>';
+        (f.match ? '<span class="pill" style="background:#fff">' + f.match + '% taste match</span>' : dots(f.overlap || 0)) + '</button>';
     });
+    if (Object.keys(FRIENDS).some(k => S.following[k] && !FRIENDS[k].match)) {
+      html += '<p class="muted" style="font-size:12px;display:flex;gap:6px;align-items:center;margin-top:-4px">' + dots(2) + '<span>Rate 3 of the same places to unlock your taste match.</span></p>';
+    }
     html += '</div><div class="card"><h3>seva is better with friends</h3><p class="muted">See where the people you trust get their hair, nails, massages and facials done.</p><div style="display:flex;gap:8px">' +
       '<button class="btn tone center" data-act="toast" data-msg="Finds friends from your contacts">' + ic('contacts', 18) + 'From contacts</button><button class="btn fill" data-act="toast" data-msg="Opens the share sheet with your invite link">' + ic('share', 18) + 'Invite</button></div>' +
       '</div>';
@@ -565,7 +574,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
       '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">' + avatar(f.name, 72) + '<div style="font-size:22px;font-weight:700;display:flex;gap:6px;align-items:center">' + esc(f.name) + (f.verified ? seal(20) : '') + '</div>' +
       (f.bio ? '<div class="sub">' + esc(f.bio) + '</div>' : '') +
       '<div class="sub">' + (f.private ? ic('lock', 12) + ' Private profile' : (f.suggested ? 'Public profile' : '')) + (f.suggested ? ' · ' : '') + f.followers + ' followers' + (canSee ? ' · ' + vs.length + ' places' : '') + '</div>' +
-      (f.match ? '<span class="pill" style="background:var(--surface);font-size:13px;padding:4px 12px">' + f.match + '% taste match</span><p class="muted" style="font-size:12px;max-width:250px">Based on how closely your ratings agree on places you’ve both been.</p>' : '') +
+      (f.match && S.following[k] ? '<span class="pill" style="background:var(--surface);font-size:13px;padding:4px 12px">' + f.match + '% taste match</span><p class="muted" style="font-size:12px;max-width:250px">Based on how closely your ratings agree on places you’ve both been.</p>' :
+       S.following[k] ? dots(f.overlap || 0) + '<p class="muted" style="font-size:12px;max-width:250px">Rate 3 of the same places to unlock your taste match.</p>' : '') +
       '<button class="btn ' + (S.following[k] || S.requested[k] ? 'tone' : 'fill') + ' center" style="width:auto;padding:8px 24px" data-act="follow" data-id="' + k + '">' + (S.following[k] ? ic('check', 16, null, 2.4) : '') + followLabel(k) + '</button></div>';
     if (!canSee) {
       return html + '<div class="empty">' + ic('lock', 26) + '<b>This profile is private</b><p class="muted">' + (S.requested[k] ? 'You\u2019ll see their list once they approve your request.' : 'Follow ' + esc(f.name.split(' ')[0]) + ' to ask to see their list.') + '</p></div></div>';
