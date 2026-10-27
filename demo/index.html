@@ -297,6 +297,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     jordan: { name: 'Jordan Ellis', user: 'jordanellis', match: null, followers: 12 },
     // Well-known accounts: a public, verified profile and a private one
     sienna: { name: 'Sienna Brooks', user: 'siennabrooks', match: null, followers: '128k', verified: true, suggested: true, bio: 'Beauty editor, NYC' },
+    leah: { name: 'Leah Park', user: 'leahpark', match: 86, followers: 88, private: true },
     devon: { name: 'Devon Hale', user: 'devonhale', match: null, followers: '41k', private: true, suggested: true, bio: 'Stylist to stylists' }
   };
   // What friends logged: status, provider, service, rating
@@ -330,7 +331,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     { t: 'Discover nearby', d: 'A map of salons, spas and studios around you, color-coded by category.', hint: 'Tap a pin or a category chip.', go: () => reset({ tab: 'discover' }) },
     { t: 'Friends and taste match', d: 'Follow friends to browse their lists. Taste match shows how closely your ratings agree.', hint: 'Tap Priya to open her list.', go: () => reset({ tab: 'friends' }) },
     { t: 'People you admire', d: 'Public profiles show anyone where someone goes, down to who they ask for. Verified people get a check. Private profiles approve followers.', hint: 'Open Sienna under People to follow, no follow needed. Then try Devon, who is private.', go: () => reset({ tab: 'friends' }) },
-    { t: 'Activity', d: 'Hear when a friend goes somewhere on your Want to Try list, and who they saw.', hint: 'Tap an update to open the place.', go: () => reset({ tab: 'friends', stack: [{ type: 'activity' }] }) },
+    { t: 'Activity', d: 'Hear when a friend goes somewhere on your Want to Try list, and approve follow requests, then follow back.', hint: 'Approve Leah, then tap Follow back. She\u2019s private, so she approves you too.', go: () => reset({ tab: 'friends', stack: [{ type: 'activity' }] }) },
     { t: 'Share your top list', d: 'Turn your favorites into a story-sized card for Instagram.', hint: 'This is the card seva makes from your Been list.', go: () => reset({ tab: 'list', sheet: { type: 'sharecard', cat: null } }) },
     { t: 'Find us on seva', d: 'Stylists and salons get a link and QR code for their bio or front desk, so clients can save and recommend them.', hint: 'Scan the code with your phone camera if you like.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'lune' }], sheet: { type: 'qr', id: 'lune' } }) },
     { t: 'Booking in seva', d: 'Book buttons go to the place’s own site today. We’re gauging interest in booking without leaving seva.', hint: 'Below the Book buttons. Would you tap Notify me?', go: () => { reset({ tab: 'list', stack: [{ type: 'place', id: 'knead' }] }); setTimeout(() => { const el = document.getElementById('bookhere'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60); } }
@@ -340,7 +341,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   let S = {};
   let chapter = 0;
   function reset(next) {
-    S = Object.assign({ login: false, tab: 'list', stack: [], sheet: null, listTab: 'been', filter: null, dfilter: null, following: { priya: true, maya: true, jordan: true, sienna: false, devon: false }, requested: {}, isPrivate: false, privPick: false, joined: false }, keepFrom(S), next);
+    S = Object.assign({ login: false, tab: 'list', stack: [], sheet: null, listTab: 'been', filter: null, dfilter: null, following: { priya: true, maya: true, jordan: true, sienna: false, devon: false }, requested: {}, isPrivate: false, privPick: false, joined: false, leahReq: 'pending' }, keepFrom(S), next);
     render();
   }
   // Follows, requests and privacy carry across tour steps.
@@ -349,6 +350,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     if (s.following) k.following = s.following;
     if (s.requested) k.requested = s.requested;
     if (s.isPrivate !== undefined) k.isPrivate = s.isPrivate;
+    if (s.leahReq) k.leahReq = s.leahReq;
     return k;
   }
   function seal(size) {
@@ -588,6 +590,16 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
       { who: 'Jordan Ellis', text: ' started following you', when: '3 days ago' }
     ];
     let html = bar('Activity') + '<div class="pad"><div class="list-gap">';
+    if (S.leahReq === 'pending') {
+      html += '<div class="row" style="cursor:default">' + avatar('Leah Park', 36) + '<span class="grow"><span style="font-size:14px"><b>Leah Park</b> asked to follow you</span><span class="sub" style="font-size:12px">Just now</span></span>' +
+        '<button class="btn fill center" data-act="leahapprove" style="width:auto;padding:7px 12px;font-size:13px">Approve</button>' +
+        '<button class="ib" data-act="leahdecline" aria-label="Decline Leah" style="min-width:36px;min-height:36px">' + ic('x', 18) + '</button></div>';
+    } else if (S.leahReq === 'approved') {
+      const st = S.following.leah ? 'Following' : S.requested.leah ? 'Requested' : 'Follow back';
+      html += '<div class="row" style="cursor:default;flex-wrap:wrap">' + avatar('Leah Park', 36) + '<span class="grow"><span style="font-size:14px"><b>Leah Park</b> now follows you</span><span class="sub" style="font-size:12px">' +
+        (S.requested.leah ? 'Leah is private. Once she approves you, you\u2019ll both see your taste match.' : 'Follow back to see each other\u2019s lists and your taste match.') + '</span></span>' +
+        '<button class="btn ' + (st === 'Follow back' ? 'fill' : 'tone') + ' center" data-act="follow" data-id="leah" style="width:auto;padding:7px 12px;font-size:13px">' + st + '</button></div>';
+    }
     items.forEach(it => {
       html += '<button class="row" ' + (it.place ? 'data-act="place" data-id="' + it.place + '"' : 'data-act="friend" data-id="jordan"') + '>' + avatar(it.who, 36) +
         '<span class="grow"><span style="font-size:14px"><b>' + esc(it.who) + '</b>' + esc(it.text) + (it.place ? '<b>' + esc(PLACES[it.place].name) + '</b>' + esc(it.extra) : '') + '</span><span class="sub" style="font-size:12px">' + it.when + '</span></span></button>';
@@ -727,6 +739,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
         if (S.following[id]) { S.following[id] = false; toast('Unfollowed ' + f.name.split(' ')[0]); }
         else if (f.private) { S.requested[id] = !S.requested[id]; toast(S.requested[id] ? 'Request sent to ' + f.name.split(' ')[0] : 'Request canceled'); }
         else { S.following[id] = true; toast('Following ' + f.name.split(' ')[0]); }
+        // (Leah approves you back a moment later, so the demo shows the full loop)
+        if (id === 'leah' && S.requested.leah) setTimeout(() => { S.requested.leah = false; S.following.leah = true; toast('Leah approved you. 86% taste match'); render(); }, 2200);
         render();
         break;
       }
@@ -754,6 +768,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
         S.sheet = null; S.stack = []; S.tab = 'list'; S.listTab = 'been'; S.filter = null; render(true); toast('Added to your list');
         break;
       }
+      case 'leahapprove': S.leahReq = 'approved'; render(); toast('Leah can now see your list'); break;
+      case 'leahdecline': S.leahReq = 'declined'; render(); toast('Request declined'); break;
       case 'join': S.joined = true; render(); toast('We’ll let you know'); break;
       case 'addmanual': toast('Add a place by name, handle or address'); break;
       case 'toast': toast(el.dataset.msg); break;
