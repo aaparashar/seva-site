@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find us on seva</title>
+<meta name="description" content="Save, recommend and book beauty and wellness spots on seva.">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #FAF7F2; color: #1C1C1A;
+         font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; text-align: center; padding: 0 20px; }
+  img { width: 80px; height: auto; display: block; margin: 0 auto 16px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .meta { color: #7A7570; margin: 0 0 8px; }
+  .pill { display: inline-block; font-size: 13px; font-weight: 600; padding: 3px 12px; border-radius: 999px; margin-bottom: 20px; }
+  p { color: #7A7570; margin: 0 0 24px; }
+  .button { display: inline-block; background: #2B2A27; color: #FAF7F2; text-decoration: none; padding: 14px 28px; border-radius: 12px; font-weight: 600; }
+  .small { font-size: 14px; margin-top: 20px; }
+  .small a { color: #1C1C1A; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <img src="../seva-mark.png" alt="seva logo" width="80">
+  <h1 id="title">Find us on seva</h1>
+  <div id="address" class="meta" hidden></div>
+  <div id="category" class="pill" hidden></div>
+  <p id="pitch">Save it, see who your friends recommend, and book in one tap.</p>
+  <a id="open" class="button" href="seva://">Open in seva</a>
+  <p class="small">Don't have seva yet? It's coming soon to the App Store.<br><a href="../">seva home</a> · <a href="../privacy.html">Privacy</a></p>
+</main>
+<script>
+  // Only accept a UUID; everything shown is set as text, never HTML.
+  var id = (new URLSearchParams(location.search).get("id") || "").toLowerCase();
+  var categories = {
+    hair:  { label: "Hair",  color: "#C4714F" },
+    face:  { label: "Face",  color: "#C9698A" },
+    nails: { label: "Nails", color: "#A07BB5" },
+    body:  { label: "Body",  color: "#7D9E8C" },
+    spa:   { label: "Body",  color: "#7D9E8C" }
+  };
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) {
+    document.getElementById("open").href = "seva://p/" + id;
+    // Public anon key (safe to ship; this function returns only a business's public name, category and address).
+    var key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZnBkZWxrYWhjdHdrbGhsc2hsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NjI5NDMsImV4cCI6MjA4OTUzODk0M30.SwkKizhUJmzg3_4VNsycimwT4OQXCdr07bpg4l6b3vc";
+    fetch("https://fefpdelkahctwklhlshl.supabase.co/rest/v1/rpc/public_practitioner", {
+      method: "POST",
+      headers: { "apikey": key, "Authorization": "Bearer " + key, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_id: id })
+    }).then(function (r) { return r.ok ? r.json() : []; }).then(function (rows) {
+      var p = rows && rows[0];
+      if (!p || !p.name) return;
+      document.title = p.name + " on seva";
+      document.getElementById("title").textContent = p.name;
+      if (p.address) {
+        var a = document.getElementById("address");
+        a.textContent = p.address;
+        a.hidden = false;
+      }
+      var c = categories[p.category];
+      if (c) {
+        var pill = document.getElementById("category");
+        pill.textContent = c.label;
+        pill.style.color = c.color;
+        pill.style.background = c.color + "1F";
+        pill.hidden = false;
+      }
+      document.getElementById("pitch").textContent = p.saves >= 3
+        ? "Saved by " + p.saves + " people on seva. Save it, see who your friends recommend, and book in one tap."
+        : "Save it, see who your friends recommend, and book in one tap.";
+    }).catch(function () {});
+  }
+</script>
+</body>
+</html>
