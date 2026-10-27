@@ -118,6 +118,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
 .score { font-weight: 700; font-variant-numeric: tabular-nums; }
 .pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: var(--bg); color: var(--ink); width: fit-content; }
 .catpill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 12px; width: fit-content; }
+.interest { border: 1px solid #DDD6CB; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .card { background: var(--surface); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 .card h3 { margin: 0; font-size: 17px; }
 .btn { border: 0; border-radius: 12px; padding: 12px 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; font-size: 15px; }
@@ -324,7 +325,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     { t: 'Activity', d: 'Hear when a friend goes somewhere on your Want to Try list, and who they saw.', hint: 'Tap an update to open the place.', go: () => reset({ tab: 'friends', stack: [{ type: 'activity' }] }) },
     { t: 'Share your top list', d: 'Turn your favorites into a story-sized card for Instagram.', hint: 'This is the card seva makes from your Been list.', go: () => reset({ tab: 'list', sheet: { type: 'sharecard', cat: null } }) },
     { t: 'Find us on seva', d: 'Stylists and salons get a link and QR code for their bio or front desk, so clients can save and recommend them.', hint: 'Scan the code with your phone camera if you like.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'lune' }], sheet: { type: 'qr', id: 'lune' } }) },
-    { t: 'Book right here?', d: 'Today Book sends you to the place’s own site. We’re asking whether you’d rather book inside seva.', hint: 'Would you tap it? That’s the question we’re testing.', go: () => { reset({ tab: 'list', stack: [{ type: 'place', id: 'knead' }] }); setTimeout(() => { const el = document.getElementById('bookhere'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60); } }
+    { t: 'Booking in seva', d: 'Book buttons go to the place’s own site today. We’re gauging interest in booking without leaving seva.', hint: 'Below the Book buttons. Would you tap Notify me?', go: () => { reset({ tab: 'list', stack: [{ type: 'place', id: 'knead' }] }); setTimeout(() => { const el = document.getElementById('bookhere'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60); } }
   ];
 
   // ── State ────────────────────────────────────────────────────
@@ -461,8 +462,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
       bookBtn('phone', 'Call (212) 555-0148', 'Opens your phone app') +
       (p.ig ? bookBtn('camera', 'Message @' + p.ig, 'Opens Instagram') : '') +
       bookBtn('map', 'Directions', 'Opens Apple Maps') + '</div>';
-    html += '<div class="card" id="bookhere"><h3 style="display:flex;gap:8px;align-items:center">' + ic('cal', 20) + 'Book right here?</h3><p class="muted">Right now, Book takes you to the place’s own website, phone or Instagram. Would you rather see open times and book in seva? Tell us, and we’ll let you know if we add it.</p>' +
-      (S.joined ? '<div style="display:flex;gap:6px;align-items:center;font-weight:600;font-size:14px">' + ic('check', 18, null, 2.4) + 'Thanks, you’re on the list</div>' : '<button class="btn tone center" data-act="join">I’d book in seva</button>') + '</div>';
+    html += '<div class="interest" id="bookhere"><div style="display:flex;gap:12px;align-items:flex-start"><span style="display:flex;padding-top:1px">' + ic('cal', 22) + '</span><span class="grow"><span style="font-weight:600;font-size:14px">Book without leaving seva</span><span class="sub">We’re exploring in-app booking, so you could see open times and confirm in a few taps.</span></span></div>' +
+      '<div style="padding-left:34px">' + (S.joined ? '<span style="display:inline-flex;gap:6px;align-items:center;font-weight:600;font-size:13px;min-height:36px">' + ic('check', 16, null, 2.4) + 'You’re on the list</span>' : '<button class="btn tone center" data-act="join" style="width:auto;padding:8px 16px;font-size:14px">Notify me</button>') + '</div></div>';
     if (!m) html += '<button class="btn fill" data-act="save" data-id="' + id + '">' + ic('bookmark', 18) + 'Save to My List</button>';
     return html + '</div>';
   }
@@ -685,7 +686,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
         S.sheet = null; S.stack = []; S.tab = 'list'; S.listTab = 'been'; S.filter = null; render(true); toast('Added to your list');
         break;
       }
-      case 'join': S.joined = true; render(); toast('Thanks for telling us'); break;
+      case 'join': S.joined = true; render(); toast('We’ll let you know'); break;
       case 'addmanual': toast('Add a place by name, handle or address'); break;
       case 'toast': toast(el.dataset.msg); break;
     }
