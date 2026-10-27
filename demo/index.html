@@ -262,7 +262,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
     trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
     hand: '<path d="M7 12V6a1.5 1.5 0 0 1 3 0v5m0-6.5a1.5 1.5 0 0 1 3 0V11m0-5a1.5 1.5 0 0 1 3 0v6m0-3a1.5 1.5 0 0 1 3 0v4.5c0 4-2.7 6.5-6.5 6.5-2.6 0-4.3-1.2-5.8-3.4L4.5 13a1.5 1.5 0 0 1 2.5-1.5"/>',
-    pencil: '<path d="M4 20l1-4L16 5l3 3L8 19z"/>'
+    pencil: '<path d="M4 20l1-4L16 5l3 3L8 19z"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
   };
   function ic(name, size, color, width) {
     return '<svg width="' + (size || 22) + '" height="' + (size || 22) + '" viewBox="0 0 24 24" fill="none" stroke="' + (color || 'currentColor') +
@@ -293,7 +294,10 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   const FRIENDS = {
     priya: { name: 'Priya Shah', user: 'priya', match: 92, followers: 41 },
     maya: { name: 'Maya Chen', user: 'maya.c', match: 78, followers: 27 },
-    jordan: { name: 'Jordan Ellis', user: 'jordanellis', match: null, followers: 12 }
+    jordan: { name: 'Jordan Ellis', user: 'jordanellis', match: null, followers: 12 },
+    // Well-known accounts: a public, verified profile and a private one
+    sienna: { name: 'Sienna Brooks', user: 'siennabrooks', match: null, followers: '128k', verified: true, suggested: true, bio: 'Beauty editor, NYC' },
+    devon: { name: 'Devon Hale', user: 'devonhale', match: null, followers: '41k', private: true, suggested: true, bio: 'Stylist to stylists' }
   };
   // What friends logged: status, provider, service, rating
   const VISITS = [
@@ -302,7 +306,10 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     ['jordan', 'stillwater', 'been', null, 'Contrast circuit', 9.0], ['priya', 'stillwater', 'been', null, 'Sauna + cold plunge', 8.5],
     ['maya', 'saffron', 'been', 'Dr. Ana', 'Hydrafacial', 8.5], ['priya', 'knead', 'been', 'Tomás', 'Deep tissue', 9.0],
     ['maya', 'kinship', 'been', 'Dr. Lin', 'Acupuncture', 8.8], ['jordan', 'gloss', 'been', 'Bea', 'Nail art', 8.2],
-    ['maya', 'petal', 'been', 'Rae', 'Brow lamination', 8.5], ['priya', 'ritual', 'want'], ['jordan', 'ember', 'been', null, 'Sauna', 7.8]
+    ['maya', 'petal', 'been', 'Rae', 'Brow lamination', 8.5], ['priya', 'ritual', 'want'], ['jordan', 'ember', 'been', null, 'Sauna', 7.8],
+    ['sienna', 'juniper', 'been', 'Maria', 'Gloss + blowout', 9.5], ['sienna', 'halo', 'been', 'Kenji', 'Head spa', 9.2], ['sienna', 'saffron', 'been', 'Dr. Ana', 'Hydrafacial', 9.0],
+    ['sienna', 'lune', 'been', 'Kim', 'Russian mani', 9.3], ['sienna', 'ember', 'been', null, 'Contrast circuit', 8.6],
+    ['devon', 'arlo', 'been', 'Dev', 'Fade', 9.0], ['devon', 'knead', 'been', 'Tomás', 'Deep tissue', 8.8]
   ].map(v => ({ friend: v[0], place: v[1], status: v[2], provider: v[3] || null, service: v[4] || null, rating: v[5] || null }));
   const MY = {
     lune: { status: 'been', rating: 9.4, provider: 'Kim', service: 'Gel mani', price: 2, date: 'Oct 2' },
@@ -316,12 +323,13 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   };
 
   const CHAPTERS = [
-    { t: 'Sign in', d: 'Sign in with Apple or Google. No passwords.', hint: 'Tap either sign-in button.', go: () => reset({ login: true }) },
+    { t: 'Sign in', d: 'Sign in with Apple or Google, then choose whether your list is public or private.', hint: 'Tap either sign-in button, then pick Public or Private.', go: () => reset({ login: true }) },
     { t: 'Save from Instagram', d: 'See a great stylist on Instagram? Share the post to seva and it finds the place for you.', hint: 'Tap the share arrow on the post, then pick seva.', go: () => reset({ tab: 'list', stack: [{ type: 'ig' }] }) },
     { t: 'Your list', d: 'Places you’ve been, ranked by your rating within each category, and places you want to try.', hint: 'Switch between Been and Want to Try, filter by category, or tap a place.', go: () => reset({ tab: 'list' }) },
     { t: 'A place, through your friends', d: 'Who to ask for, what friends booked and rated, and Book buttons for the place’s site, phone, Instagram or directions.', hint: 'Scroll the profile. "Who to ask for" is the part people love.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'juniper' }] }) },
     { t: 'Discover nearby', d: 'A map of salons, spas and studios around you, color-coded by category.', hint: 'Tap a pin or a category chip.', go: () => reset({ tab: 'discover' }) },
     { t: 'Friends and taste match', d: 'Follow friends to browse their lists. Taste match shows how closely your ratings agree.', hint: 'Tap Priya to open her list.', go: () => reset({ tab: 'friends' }) },
+    { t: 'People you admire', d: 'Public profiles show anyone where someone goes, down to who they ask for. Verified people get a check. Private profiles approve followers.', hint: 'Open Sienna under People to follow, no follow needed. Then try Devon, who is private.', go: () => reset({ tab: 'friends' }) },
     { t: 'Activity', d: 'Hear when a friend goes somewhere on your Want to Try list, and who they saw.', hint: 'Tap an update to open the place.', go: () => reset({ tab: 'friends', stack: [{ type: 'activity' }] }) },
     { t: 'Share your top list', d: 'Turn your favorites into a story-sized card for Instagram.', hint: 'This is the card seva makes from your Been list.', go: () => reset({ tab: 'list', sheet: { type: 'sharecard', cat: null } }) },
     { t: 'Find us on seva', d: 'Stylists and salons get a link and QR code for their bio or front desk, so clients can save and recommend them.', hint: 'Scan the code with your phone camera if you like.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'lune' }], sheet: { type: 'qr', id: 'lune' } }) },
@@ -332,10 +340,21 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   let S = {};
   let chapter = 0;
   function reset(next) {
-    S = Object.assign({ login: false, tab: 'list', stack: [], sheet: null, listTab: 'been', filter: null, dfilter: null, following: { priya: true, maya: true, jordan: true }, joined: false }, keepFrom(S), next);
+    S = Object.assign({ login: false, tab: 'list', stack: [], sheet: null, listTab: 'been', filter: null, dfilter: null, following: { priya: true, maya: true, jordan: true, sienna: false, devon: false }, requested: {}, isPrivate: false, privPick: false, joined: false }, keepFrom(S), next);
     render();
   }
-  function keepFrom(s) { return { saved: s.saved || {}, joined: !!s.joined }; }
+  // Follows, requests and privacy carry across tour steps.
+  function keepFrom(s) {
+    const k = { saved: s.saved || {}, joined: !!s.joined };
+    if (s.following) k.following = s.following;
+    if (s.requested) k.requested = s.requested;
+    if (s.isPrivate !== undefined) k.isPrivate = s.isPrivate;
+    return k;
+  }
+  function seal(size) {
+    return '<svg width="' + (size || 14) + '" height="' + (size || 14) + '" viewBox="0 0 24 24" role="img" aria-label="Verified" style="flex:none"><path fill="#2B2A27" d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.5 2-.4 3.2-3.2.5-2 2.5L12 20.6l-2.9 1.4-2-2.5-3.2-.5-.4-3.2-2.5-2 1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z"/><path fill="none" stroke="#FAF7F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 12.3l2.7 2.7L16.2 9.4"/></svg>';
+  }
+  function followLabel(k) { return S.following[k] ? 'Following' : S.requested[k] ? 'Requested' : 'Follow'; }
 
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -455,6 +474,15 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
         return '<div style="display:flex;gap:10px;align-items:center">' + avatar(f.name, 32) + '<span class="grow"><span style="font-weight:500;font-size:14px">' + esc(f.name) + '</span>' + (d ? '<span class="sub">' + esc(d) + '</span>' : '') + '</span>' + (v.rating ? '<span class="score">' + fmt(v.rating) + '</span>' : '') + '</div>';
       }).join('') + '</div>';
     }
+    // Also loved by: verified public profiles, whether or not you follow them
+    const loved = VISITS.filter(v => v.place === id && v.status === 'been' && v.rating >= 8 && FRIENDS[v.friend].verified && !FRIENDS[v.friend].private);
+    if (loved.length) {
+      html += '<div style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:0;font-size:17px">Also loved by</h3>' + loved.map(v => {
+        const f = FRIENDS[v.friend];
+        const d = [v.provider ? 'saw ' + v.provider : null, v.service].filter(Boolean).join(' · ');
+        return '<button class="row" data-act="friend" data-id="' + v.friend + '" style="padding:10px 12px">' + avatar(f.name, 32) + '<span class="grow"><span style="font-weight:600;font-size:14px;display:flex;gap:4px;align-items:center">' + esc(f.name) + seal(12) + '</span><span class="sub">' + esc(d) + '</span></span><span class="score">' + fmt(v.rating) + '</span></button>';
+      }).join('') + '</div>';
+    }
     // Book
     html += '<div style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:0;font-size:17px">Book</h3>' +
       bookBtn('info', 'Hours, photos & reviews', 'Opens Apple’s place card') +
@@ -504,10 +532,21 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   function screenFriends() {
     let html = '<div class="pad"><div style="display:flex;justify-content:space-between;align-items:flex-end"><h2 class="big">Friends</h2><button class="ib" data-act="activity" aria-label="Activity" style="position:relative">' + ic('bell') + '<span class="badge" style="position:absolute;top:4px;right:4px;background:#B4483C;color:#fff;font-size:10px;border-radius:9px;min-width:16px;height:16px;display:grid;place-items:center">2</span></button></div>' +
       '<div class="searchbar">' + ic('search', 18) + '<span>Search by name or username</span></div>';
-    html += '<div class="sec">Following</div><div class="list-gap">';
-    Object.keys(FRIENDS).forEach(k => {
+    const suggested = Object.keys(FRIENDS).filter(k => FRIENDS[k].suggested && !S.following[k]);
+    if (suggested.length) html += '<div class="sec">People to follow</div><div class="chips" style="gap:10px">';
+    suggested.forEach(k => {
       const f = FRIENDS[k];
-      html += '<button class="row" data-act="friend" data-id="' + k + '">' + avatar(f.name, 40) + '<span class="grow"><span class="name">' + esc(f.name) + '</span><span class="sub">@' + esc(f.user) + '</span></span>' +
+      html += '<div style="flex:none;width:148px;background:var(--surface);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">' +
+        '<button class="ib" data-act="friend" data-id="' + k + '" style="padding:0;min-height:0" aria-label="Open ' + esc(f.name) + '">' + avatar(f.name, 52) + '</button>' +
+        '<span style="display:flex;gap:4px;align-items:center;font-weight:600;font-size:14px">' + esc(f.name) + (f.verified ? seal(13) : '') + '</span>' +
+        '<span class="sub" style="font-size:12px">' + (f.private ? ic('lock', 11) + ' Private' : 'Public') + ' · ' + f.followers + '</span>' +
+        '<button class="btn ' + (S.requested[k] ? 'tone' : 'fill') + ' center" data-act="follow" data-id="' + k + '" style="padding:7px 10px;font-size:13px">' + followLabel(k) + '</button></div>';
+    });
+    if (suggested.length) html += '</div>';
+    html += '<div class="sec">Following</div><div class="list-gap">';
+    Object.keys(FRIENDS).filter(k => S.following[k]).forEach(k => {
+      const f = FRIENDS[k];
+      html += '<button class="row" data-act="friend" data-id="' + k + '">' + avatar(f.name, 40) + '<span class="grow"><span class="name" style="display:flex;gap:4px;align-items:center">' + esc(f.name) + (f.verified ? seal(13) : '') + '</span><span class="sub">@' + esc(f.user) + '</span></span>' +
         (f.match ? '<span class="pill" style="background:#fff">' + f.match + '% taste match</span>' : '<span class="sub" style="font-size:12px">taste match shows at 3</span>') + '</button>';
     });
     html += '</div><div class="card"><h3>seva is better with friends</h3><p class="muted">See where the people you trust get their hair, nails, massages and facials done.</p><div style="display:flex;gap:8px">' +
@@ -519,10 +558,17 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   function screenFriend(k) {
     const f = FRIENDS[k];
     const vs = VISITS.filter(v => v.friend === k && v.status === 'been').sort((a, b) => b.rating - a.rating);
+    const canSee = !f.private || S.following[k];
     let html = bar('@' + f.user, '<span class="ib" aria-hidden="true">•••</span>') + '<div class="pad" style="align-items:stretch">' +
-      '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">' + avatar(f.name, 72) + '<div style="font-size:22px;font-weight:700">' + esc(f.name) + '</div><div class="sub">' + f.followers + ' followers · ' + vs.length + ' places</div>' +
+      '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">' + avatar(f.name, 72) + '<div style="font-size:22px;font-weight:700;display:flex;gap:6px;align-items:center">' + esc(f.name) + (f.verified ? seal(20) : '') + '</div>' +
+      (f.bio ? '<div class="sub">' + esc(f.bio) + '</div>' : '') +
+      '<div class="sub">' + (f.private ? ic('lock', 12) + ' Private profile' : (f.suggested ? 'Public profile' : '')) + (f.suggested ? ' · ' : '') + f.followers + ' followers' + (canSee ? ' · ' + vs.length + ' places' : '') + '</div>' +
       (f.match ? '<span class="pill" style="background:var(--surface);font-size:13px;padding:4px 12px">' + f.match + '% taste match</span><p class="muted" style="font-size:12px;max-width:250px">Based on how closely your ratings agree on places you’ve both been.</p>' : '') +
-      '<button class="btn tone center" style="width:auto;padding:8px 20px" data-act="toast" data-msg="You follow ' + esc(f.name.split(' ')[0]) + '">' + ic('check', 16, null, 2.4) + 'Following</button></div>';
+      '<button class="btn ' + (S.following[k] || S.requested[k] ? 'tone' : 'fill') + ' center" style="width:auto;padding:8px 24px" data-act="follow" data-id="' + k + '">' + (S.following[k] ? ic('check', 16, null, 2.4) : '') + followLabel(k) + '</button></div>';
+    if (!canSee) {
+      return html + '<div class="empty">' + ic('lock', 26) + '<b>This profile is private</b><p class="muted">' + (S.requested[k] ? 'You\u2019ll see their list once they approve your request.' : 'Follow ' + esc(f.name.split(' ')[0]) + ' to ask to see their list.') + '</p></div></div>';
+    }
+    if (!S.following[k]) html += '<p class="muted" style="text-align:center;font-size:13px">Public profile: you can see their list without following.</p>';
     html += '<div class="sec">Been</div><div class="list-gap">';
     const rk = {};
     vs.forEach(v => {
@@ -554,6 +600,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     const items = myItems();
     return '<div class="pad"><h2 class="big">Profile</h2><div style="display:flex;gap:14px;align-items:center">' + avatar('Alex', 56) + '<div style="display:flex;flex-direction:column"><b style="font-size:18px">Alex Rivera</b><span class="sub">@alexr</span></div></div>' +
       '<div class="stats"><div><b>' + items.filter(i => i.status === 'been').length + '</b><span>Been</span></div><div><b>' + items.filter(i => i.status === 'want').length + '</b><span>Want to Try</span></div><div><b>3</b><span>Following</span></div></div>' +
+      '<div class="settings"><button data-act="privtoggle"><span style="display:flex">' + ic('lock', 20) + '</span><span style="flex:1">Private profile</span><span style="width:46px;height:28px;border-radius:14px;background:' + (S.isPrivate ? '#2B2A27' : '#D9D2C7') + ';position:relative;flex:none"><span style="position:absolute;top:2px;' + (S.isPrivate ? 'right:2px' : 'left:2px') + ';width:24px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span></button></div>' +
+      '<p class="muted" style="font-size:12px;margin-top:-8px">' + (S.isPrivate ? 'Only people you approve can see your list.' : 'Anyone on seva can see your list and follow you.') + '</p>' +
       '<div class="settings">' + setRow('pencil', 'Edit profile') + setRow('bell', 'Notifications') + setRow('lists', 'Lists') + setRow('hand', 'Blocked accounts') + '</div>' +
       '<div class="settings">' + setRow('info', 'Privacy Policy') + setRow('flag', 'Terms of Use') + setRow('comment', 'Contact & Support') + '</div>' +
       '<div class="settings"><button data-act="toast" data-msg="Signs you out">Sign Out</button><button data-act="toast" data-msg="Permanently deletes your account and data" style="color:#B4483C">' + ic('trash', 20, '#B4483C') + 'Delete Account</button></div></div>';
@@ -617,6 +665,15 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
         '<p class="muted" style="text-align:center">Work here? Add this link to your Instagram bio or print the QR code for your front desk. Clients can save you, recommend you to friends and book in one tap.</p>' +
         '<button class="btn fill" data-act="toast" data-msg="Opens the share sheet with the link">' + ic('link', 18) + 'Share link</button><button class="btn tone center" data-act="toast" data-msg="Shares the QR card as an image">' + ic('qr', 18) + 'Share QR code</button><button class="btn tone center" data-act="toast" data-msg="Copied">' + ic('copy', 18) + 'Copy link</button></div>';
     }
+    if (sh.type === 'privacy') {
+      const opt = (priv, icon, title, detail) => '<button class="row" data-act="privpick" data-v="' + (priv ? '1' : '') + '" style="align-items:flex-start;' + (S.privPick === priv ? 'outline:1.5px solid #2B2A27' : '') + '">' +
+        '<span style="display:flex;padding-top:2px">' + ic(icon, 22) + '</span><span class="grow"><span style="font-weight:600">' + title + '</span><span class="sub">' + detail + '</span></span>' +
+        '<span style="display:flex">' + ic(S.privPick === priv ? 'check' : 'x', 18, S.privPick === priv ? '#2B2A27' : 'transparent', 2.4) + '</span></button>';
+      return '<div class="sheet"><div class="grab"></div><div style="font-size:22px;font-weight:700">Who can see your list?</div><p class="muted">You can change this anytime in Profile. Your notes are always private.</p>' +
+        opt(false, 'globe', 'Public', 'Anyone on seva can see your list and follow you.') +
+        opt(true, 'lock', 'Private', 'People ask to follow you, and only those you approve see your list.') +
+        '<button class="btn fill" data-act="privsave">Continue</button></div>';
+    }
     if (sh.type === 'cluster') {
       return '<div class="sheet"><div class="grab"></div><b style="text-align:center">3 places here</b><div class="list-gap">' + ['saffron', 'petal', 'halo'].map(id => { const p = PLACES[id]; return '<button class="row" data-act="place" data-id="' + id + '">' + catIcon(p.cat) + '<span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + '</span></span></button>'; }).join('') + '</div></div>';
     }
@@ -661,7 +718,18 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     const a = el.dataset.act, id = el.dataset.id, v = el.dataset.v;
     if (a === 'scrim') { if (e.target === el) closeSheet(); return; }
     switch (a) {
-      case 'signin': S.login = false; S.tab = 'list'; render(true); toast('Signed in'); if (chapter === 0) setTimeout(() => setChapter(1), 700); break;
+      case 'signin': S.login = false; S.tab = 'list'; S.privPick = false; render(true); openSheet({ type: 'privacy' }); break;
+      case 'privpick': S.privPick = !!v; renderSheet(); break;
+      case 'privsave': S.isPrivate = S.privPick; closeSheet(); toast(S.isPrivate ? 'Your profile is private' : 'Your profile is public'); if (chapter === 0) setTimeout(() => setChapter(1), 700); break;
+      case 'privtoggle': S.isPrivate = !S.isPrivate; render(); toast(S.isPrivate ? 'Your profile is private' : 'Your profile is public'); break;
+      case 'follow': {
+        const f = FRIENDS[id];
+        if (S.following[id]) { S.following[id] = false; toast('Unfollowed ' + f.name.split(' ')[0]); }
+        else if (f.private) { S.requested[id] = !S.requested[id]; toast(S.requested[id] ? 'Request sent to ' + f.name.split(' ')[0] : 'Request canceled'); }
+        else { S.following[id] = true; toast('Following ' + f.name.split(' ')[0]); }
+        render();
+        break;
+      }
       case 'tab': S.tab = v; S.stack = []; S.sheet = null; render(true); break;
       case 'back': pop(); break;
       case 'listtab': S.listTab = v; render(); break;
