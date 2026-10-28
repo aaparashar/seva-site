@@ -42,7 +42,7 @@
   <div class="rule"></div>
 
   <h1>Privacy Policy</h1>
-  <p class="meta">Effective October 27, 2026</p>
+  <p class="meta">Effective October 30, 2026</p>
 
   <div class="card">
     <p><strong>The short version:</strong> seva stores what you need to keep your wellness list and share it with friends. We don't sell your data, we don't show ads, and we don't track you across other apps or websites. You can delete your account and data at any time in the app.</p>
@@ -55,9 +55,11 @@
     <li><strong>Account details.</strong> When you sign in with Apple or Google, we receive your name and email address. If you use Apple's "Hide My Email", we receive a private relay address instead of your real email. For Sign in with Apple, we also keep a token from Apple so we can revoke seva's access when you delete your account.</li>
     <li><strong>Profile.</strong> Your display name, username and profile photo, which you can change in Profile → Edit profile. If you sign in with Google, we use your Google profile photo until you change or remove it. Photos you add are resized on your phone and stored with Supabase.</li>
     <li><strong>Your list.</strong> The practitioners and places you save, whether you've been or want to try them, your ratings, the provider you saw, the service, visit date and price level, how you found them (for example "friend rec" and who recommended them), any notes you add, and custom lists you create.</li>
-    <li><strong>Friends.</strong> The people you follow, and anyone you block.</li>
+    <li><strong>Friends.</strong> The people you follow, follow requests you send or receive, whether your profile is public or private, and anyone you block.</li>
     <li><strong>Contacts (only if you tap "Find friends").</strong> We check your contacts' email addresses against seva accounts. Addresses are scrambled (hashed) on your phone before anything is sent, and we don't store your contacts or the hashes.</li>
     <li><strong>Notifications.</strong> If you turn on notifications, we store your device's push token so we can send them, plus your notification preferences. We record activity such as new followers and friends visiting places on your Want to Try list to show in the app.</li>
+    <li><strong>Pro verification (only if you claim a business or stylist profile).</strong> The Instagram handle or email address you give us to prove it's you, the code we send, and the outcome. If you verify by email, we send the code through our email provider. We delete the handle or email 90 days after we decide; the outcome is kept so your verified check stays.</li>
+    <li><strong>Pro profile.</strong> If you're a stylist or owner on seva, the name clients know you by, your Instagram handle and a short bio. Owners can also update their business's booking link, phone, Instagram and description.</li>
     <li><strong>Reports.</strong> If you report another user, we record the report and any details you add so we can review it. The person you report isn't told who reported them.</li>
     <li><strong>Interest in upcoming features.</strong> If you join the Book It waitlist, we record that you joined.</li>
     <li><strong>Posts you share to seva.</strong> When you share an Instagram post or web link to seva, we use the link and, where available, the post's caption to identify the business it mentions.</li>
@@ -88,19 +90,23 @@
     <thead><tr><th>Information</th><th>Who can see it</th></tr></thead>
     <tbody>
       <tr><td>Name, username and profile photo</td><td>Any signed-in seva user (so friends can find you). Your photo is stored at a hard-to-guess web address; anyone who has that address can view it.</td></tr>
-      <tr><td>Your saved list, ratings, and who you saw</td><td>People who follow you (they also see how closely your ratings match theirs)</td></tr>
+      <tr><td>Your saved list, ratings, and who you saw</td><td><strong>Public profile:</strong> any signed-in seva user. <strong>Private profile:</strong> only followers you approve. Followers also see how closely your ratings match theirs.</td></tr>
       <tr><td>Who you follow / follower counts</td><td>Signed-in seva users</td></tr>
       <tr><td>Your notes</td><td><strong>Only you</strong></td></tr>
       <tr><td>Your email address</td><td><strong>Only you</strong> (never shown to other users)</td></tr>
+      <tr><td>Pro profile (if you're a verified stylist or owner): name, Instagram, bio, where you work</td><td>Any signed-in seva user</td></tr>
+      <tr><td>Visits where a client named you</td><td>Shown on your pro profile only to people who could already see that client's list (their followers)</td></tr>
+      <tr><td>Your business's stats (owners)</td><td>Only the owner, as totals. Numbers under 5 are hidden, and owners never see who saved, viewed or tapped</td></tr>
     </tbody>
   </table>
   </div>
-  <p>Anyone with a seva account can follow you. If you'd rather your list not be visible, don't add places you want to keep private, or delete your account.</p>
+  <p>You choose whether your profile is public or private, and you can change it anytime in <strong>Profile → Privacy</strong>. With a private profile, people ask to follow you and only those you approve see your list. You can remove a follower at any time. Your name, username and photo can always be found so friends can ask to follow you.</p>
 
   <h2>Service providers we share information with</h2>
   <p>We share information only with providers that help us run seva, and only what each needs:</p>
   <ul>
     <li><strong>Supabase</strong> — hosts our database, sign-in and server functions (United States).</li>
+    <li><strong>Resend</strong> — sends verification codes by email, if you choose email verification. It receives only your email address and the code.</li>
     <li><strong>Apple</strong> and <strong>Google</strong> — handle Sign in with Apple and Sign in with Google.</li>
     <li><strong>Meta (Instagram)</strong> — if a post you share arrives without its caption, our server may ask Meta's official API for that post's public caption, sending only the post's link. The app itself never loads Instagram pages.</li>
     <li><strong>Anthropic</strong> — processes the caption text of posts you share to identify the business name. It receives only the caption, not your name or email.</li>
@@ -109,7 +115,7 @@
   <p>We don't sell or rent your personal information, and we don't share it for advertising. We may disclose information if required by law or to protect the safety of our users.</p>
 
   <h2>Retention and deletion</h2>
-  <p>We keep your information while your account is active. You can delete your account at any time in <strong>Profile → Delete Account</strong>. This permanently deletes your account, profile, profile photo, saved list, ratings, notes, follows, blocks, usage history and waitlist status, and revokes seva's access to your Apple ID if you used Sign in with Apple. Reports you made about others are kept without your name so we can finish reviewing them.</p>
+  <p>We keep your information while your account is active. You can delete your account at any time in <strong>Profile → Delete Account</strong>. This permanently deletes your account, profile, profile photo, saved list, ratings, notes, follows, blocks, usage history, pro profile, verification requests and waitlist status, and revokes seva's access to your Apple ID if you used Sign in with Apple. Reports you made about others are kept without your name so we can finish reviewing them.</p>
   <p>Business listings (a salon's name and address, for example) are shared across seva so others can save them too. If you were the first to add a business, the listing stays but is no longer linked to you. A business's public name, category and address can be seen by anyone who opens its seva link.</p>
 
   <h2>Security</h2>
