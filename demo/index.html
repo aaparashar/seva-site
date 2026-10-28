@@ -560,7 +560,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     if (Object.keys(FRIENDS).some(k => S.following[k] && !FRIENDS[k].match)) {
       html += '<p class="muted" style="font-size:12px;display:flex;gap:6px;align-items:center;margin-top:-4px">' + dots(2) + '<span>Rate 3 of the same places to unlock your taste match.</span></p>';
     }
-    html += '</div><div class="card"><h3>seva is better with friends</h3><p class="muted">See where the people you trust get their hair, nails, massages and facials done.</p><div style="display:flex;gap:8px">' +
+    html += '</div><div class="card"><h3>Skip the reviews. Ask your people.</h3><p class="muted">Add friends whose taste you trust and see where they go, and who they ask for.</p><div style="display:flex;gap:8px">' +
       '<button class="btn tone center" data-act="toast" data-msg="Finds friends from your contacts">' + ic('contacts', 18) + 'From contacts</button><button class="btn fill" data-act="toast" data-msg="Opens the share sheet with your invite link">' + ic('share', 18) + 'Invite</button></div>' +
       '</div>';
     return html + '</div>';
