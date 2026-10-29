@@ -29,6 +29,7 @@
   <div id="category" class="pill" hidden></div>
   <p id="pitch">Save it, see who your friends recommend, and book in one tap.</p>
   <a id="open" class="button" href="seva://">Open in seva</a>
+  <p id="maps" class="small" hidden><a id="mapslink" href="#">See it in Apple Maps</a></p>
   <p class="small">Don't have seva yet? It's coming soon to the App Store.<br><a href="../">seva home</a> · <a href="../privacy.html">Privacy</a></p>
 </main>
 <script>
@@ -43,7 +44,7 @@
   };
   if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) {
     document.getElementById("open").href = "seva://p/" + id;
-    // Public anon key (safe to ship; this function returns only a business's public name, category and address).
+    // Public anon key (safe to ship; this function returns only a business's public name, category, owner-entered address and Apple Place ID).
     var key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZnBkZWxrYWhjdHdrbGhsc2hsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NjI5NDMsImV4cCI6MjA4OTUzODk0M30.SwkKizhUJmzg3_4VNsycimwT4OQXCdr07bpg4l6b3vc";
     fetch("https://fefpdelkahctwklhlshl.supabase.co/rest/v1/rpc/public_practitioner", {
       method: "POST",
@@ -55,6 +56,11 @@
       document.title = p.name + " on seva";
       document.getElementById("title").textContent = p.name;
       if (p.verified) document.getElementById("verified").hidden = false;
+      // Apple's address and map data stay in Apple Maps; link out by Place ID.
+      if (p.apple_place_id && /^[A-Za-z0-9._:-]{1,200}$/.test(p.apple_place_id)) {
+        document.getElementById("mapslink").href = "https://maps.apple.com/place?place-id=" + encodeURIComponent(p.apple_place_id);
+        document.getElementById("maps").hidden = false;
+      }
       if (p.address) {
         var a = document.getElementById("address");
         a.textContent = p.address;
