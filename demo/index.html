@@ -183,8 +183,15 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   .side { position: static; order: -1; }
   .tour { padding-top: 0; }
   .chapters .d { display: none; }
+  /* Phone plus Back/Next fit in one screen; the tour scrolls below. */
+  body { padding-top: 12px; }
+  .side { gap: 10px; }
+  .phone { height: clamp(440px, calc(100svh - 84px), 780px); }
+  .navrow { order: 1; }
+  .hint { order: 2; }
+  .note { order: 3; }
 }
-@media (max-width: 420px) { .phone { height: 720px; border-radius: 44px; padding: 9px; } .screen { border-radius: 36px; } }
+@media (max-width: 420px) { .phone { height: clamp(440px, calc(100svh - 84px), 720px); border-radius: 44px; padding: 9px; } .screen { border-radius: 36px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 
@@ -404,7 +411,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
 
   // ── Screens ──────────────────────────────────────────────────
   function screenLogin() {
-    return '<div style="height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:24px;text-align:center">' +
+    return '<div style="min-height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:24px;text-align:center">' +
       '<img src="' + LOGO + '" alt="" style="width:76px">' +
       '<div style="font-size:34px;font-weight:700;letter-spacing:-.02em">seva</div>' +
       '<p class="muted" style="font-size:16px">Your people. Your wellness.</p>' +
