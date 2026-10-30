@@ -2,29 +2,810 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>seva</title>
-<meta name="description" content="seva — your people, your wellness.">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<style>
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #FAF7F2; color: #1C1C1A;
-         font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; text-align: center; padding: 0 20px; }
-  img { width: 96px; height: auto; display: block; margin: 0 auto 16px; }
-  h1 { font-size: 40px; font-weight: 600; letter-spacing: 3px; margin: 0; }
-  .rule { width: 32px; height: 1px; background: #1C1C1A; margin: 12px auto 16px; opacity: .6; }
-  p { color: #7A7570; margin: 0 0 28px; }
-  a { color: #1C1C1A; }
-  nav a { margin: 0 10px; font-size: 14px; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="description" content="Click through seva: save beauty and wellness spots, see who your friends trust, and book in one tap.">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<main>
-  <img src="seva-mark.png" alt="seva logo" width="96">
-  <h1>seva</h1>
-  <div class="rule"></div>
-  <p>Your people. Your wellness.</p>
-  <nav><a href="terms.html">Terms of Use</a> <a href="privacy.html">Privacy Policy</a> <a href="mailto:hello@findseva.app">Contact</a></nav>
-</main>
+<title>seva</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a guided tour column beside a clickable iPhone running seva's real screens; stacks on phones. */
+:root {
+  --page: #FAF7F2;
+  --panel: #F2EDE5;
+  --ink: #1C1C1A;
+  --muted: #7A7570;
+  --line: #E4DDD2;
+  --accent: #2B2A27;
+  --accent-ink: #FAF7F2;
+  --chip: #FFFFFF;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --hair: #C4714F; --face: #C9698A; --nails: #A07BB5; --body: #7D9E8C;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #171614; --panel: #22201D; --ink: #F1ECE4; --muted: #A69F96; --line: #34312C;
+    --accent: #F1ECE4; --accent-ink: #1C1C1A; --chip: #2A2824;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #171614; --panel: #22201D; --ink: #F1ECE4; --muted: #A69F96; --line: #34312C;
+  --accent: #F1ECE4; --accent-ink: #1C1C1A; --chip: #2A2824;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--page); color: var(--ink); font: 15px/1.5 var(--font);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 48px;
+}
+button { font: inherit; color: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--hair); outline-offset: 2px; }
+.stage { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: start; }
+.tour { display: flex; flex-direction: column; gap: 24px; padding-top: 8px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { width: 40px; height: auto; }
+.brand span { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.tag { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025em; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 60ch; margin: 0; font-size: 16px; }
+.chapters { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; border-top: 1px solid var(--line); }
+.chapters button {
+  width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line);
+  padding: 12px 4px; display: grid; grid-template-columns: 28px 1fr; gap: 2px 10px; cursor: pointer;
+}
+.chapters .n { grid-row: span 2; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; padding-top: 2px; }
+.chapters .t { font-weight: 600; }
+.chapters .d { color: var(--muted); font-size: 14px; }
+.chapters button[aria-current="step"] .t, .chapters button[aria-current="step"] .n { color: var(--hair); }
+.chapters button:hover .t { text-decoration: underline; text-underline-offset: 3px; }
+.ask { background: var(--panel); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.ask h2 { font-size: 17px; margin: 0; }
+.ask ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.ask p { margin: 0; color: var(--muted); font-size: 14px; }
+.side { display: flex; flex-direction: column; align-items: center; gap: 14px; position: sticky; top: max(24px, env(safe-area-inset-top, 0px)); }
+.hint { max-width: 375px; width: 100%; display: flex; gap: 10px; align-items: flex-start; background: var(--panel); border-radius: 12px; padding: 10px 14px; font-size: 14px; }
+.hint b { white-space: nowrap; }
+.navrow { display: flex; gap: 8px; width: 100%; max-width: 375px; }
+.navrow button { flex: 1; border: 1px solid var(--line); background: var(--chip); border-radius: 12px; padding: 10px; font-weight: 600; cursor: pointer; }
+.navrow button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.navrow button:disabled { opacity: .4; cursor: default; }
+.note { font-size: 12px; color: var(--muted); text-align: center; max-width: 375px; }
+
+/* ── The phone (always the app's light look) ─────────────────── */
+.phone {
+  --bg: #FAF7F2; --surface: #F2EDE5; --tx: #1C1C1A; --tx2: #7A7570; --ink: #2B2A27; --err: #B4483C; --sep: #E6E0D6;
+  width: min(375px, calc(100vw - 32px)); height: 780px; border-radius: 52px; padding: 12px; background: #1C1C1A;
+  box-shadow: 0 30px 60px -20px rgba(28,28,26,.35), 0 0 0 1px rgba(0,0,0,.4);
+  color-scheme: light;
+}
+.screen { position: relative; height: 100%; border-radius: 40px; overflow: hidden; background: var(--bg); color: var(--tx); display: flex; flex-direction: column; font-size: 15px; }
+.status { flex: none; height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 6px 28px 0; font-size: 15px; font-weight: 600; position: relative; z-index: 3; }
+.status::after { content: ""; position: absolute; left: 50%; top: 10px; width: 110px; height: 30px; border-radius: 20px; background: #1C1C1A; transform: translateX(-50%); }
+.status .bat { width: 25px; height: 12px; border: 1.5px solid currentColor; border-radius: 4px; position: relative; opacity: .9; }
+.status .bat::after { content: ""; position: absolute; inset: 1.5px 6px 1.5px 1.5px; background: currentColor; border-radius: 1.5px; }
+.view { flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+.view::-webkit-scrollbar { display: none; }
+.tabs { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--sep); background: var(--bg); padding: 6px 0 22px; }
+.tabs button { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: #A8A29A; cursor: pointer; position: relative; }
+.tabs button.on { color: var(--ink); }
+.tabs .badge { position: absolute; top: -2px; left: calc(50% + 6px); background: var(--err); color: #fff; font-size: 10px; border-radius: 9px; min-width: 17px; height: 17px; display: grid; place-items: center; padding: 0 4px; }
+.pad { padding: 4px 18px 24px; display: flex; flex-direction: column; gap: 16px; }
+.big { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 2px 0 0; }
+.bar { display: flex; align-items: center; justify-content: space-between; padding: 4px 12px; min-height: 44px; }
+.bar .title { font-weight: 600; }
+.ib { border: 0; background: none; min-width: 44px; min-height: 44px; display: grid; place-items: center; cursor: pointer; color: var(--ink); border-radius: 12px; }
+.ib.text { display: flex; align-items: center; gap: 2px; font-size: 16px; padding: 0 6px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: #ECE6DC; border-radius: 9px; padding: 2px; }
+.seg button { border: 0; background: none; padding: 6px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--tx); }
+.seg button.on { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -18px; padding: 0 18px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--sep); background: #fff; border-radius: 20px; padding: 6px 12px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--tx); }
+.chip.on { color: #fff; border-color: transparent; }
+.row { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--surface); border: 0; width: 100%; text-align: left; cursor: pointer; color: var(--tx); }
+.row.tint { background: var(--tint); }
+.rank { width: 26px; height: 26px; border-radius: 13px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: #fff; flex: none; font-variant-numeric: tabular-nums; }
+.cicon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex: none; }
+.grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub { font-size: 13px; color: var(--tx2); }
+.score { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: var(--bg); color: var(--ink); width: fit-content; }
+.catpill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 12px; width: fit-content; }
+.interest { border: 1px solid #DDD6CB; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.card { background: var(--surface); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.card h3 { margin: 0; font-size: 17px; }
+.btn { border: 0; border-radius: 12px; padding: 12px 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; font-size: 15px; }
+.btn.fill { background: var(--ink); color: #FAF7F2; }
+.btn.tone { background: rgba(43,42,39,.08); color: var(--ink); justify-content: flex-start; }
+.btn.tone.center { justify-content: center; }
+.muted { color: var(--tx2); font-size: 14px; margin: 0; }
+.lookaround { height: 150px; border-radius: 16px; position: relative; overflow: hidden; }
+.lookaround span { position: absolute; right: 8px; bottom: 8px; font-size: 11px; background: rgba(0,0,0,.45); color: #fff; padding: 2px 8px; border-radius: 6px; }
+.friendsaved { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.faces { display: flex; }
+.faces i { width: 24px; height: 24px; border-radius: 12px; border: 2px solid var(--bg); margin-left: -6px; display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; color: #FAF7F2; background: var(--ink); }
+.faces i:first-child { margin-left: 0; }
+.av { border-radius: 50%; display: grid; place-items: center; color: #FAF7F2; font-weight: 700; flex: none; background: var(--ink); }
+.toast { position: absolute; left: 50%; bottom: 96px; transform: translate(-50%, 20px); background: var(--ink); color: #FAF7F2; padding: 10px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; opacity: 0; transition: .25s; pointer-events: none; white-space: nowrap; z-index: 20; max-width: 90%; overflow: hidden; text-overflow: ellipsis; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.scrim { position: absolute; inset: 0; background: rgba(28,28,26,.35); z-index: 10; display: flex; align-items: flex-end; }
+.sheet { background: var(--bg); width: 100%; max-height: 92%; border-radius: 22px 22px 0 0; overflow-y: auto; scrollbar-width: none; padding: 8px 18px 28px; display: flex; flex-direction: column; gap: 14px; animation: up .28s ease; }
+.sheet.dark { background: #F2F2F7; }
+.grab { width: 36px; height: 5px; border-radius: 3px; background: #D3CCC1; margin: 0 auto 4px; flex: none; }
+@keyframes up { from { transform: translateY(40px); opacity: .6; } }
+.field { background: #fff; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.field label { font-size: 12px; color: var(--tx2); }
+.field input { border: 0; font: inherit; color: var(--tx); outline: none; background: none; padding: 0; }
+.ratingrow { display: flex; align-items: center; gap: 12px; }
+.ratingrow input { flex: 1; accent-color: var(--ink); }
+.empty { text-align: center; padding: 40px 10px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.map { position: relative; height: 330px; margin: 0 -18px; overflow: hidden; }
+.pin { position: absolute; transform: translate(-50%, -100%); border: 0; background: none; cursor: pointer; padding: 0; display: flex; flex-direction: column; align-items: center; }
+.pin .dot { width: 32px; height: 32px; border-radius: 16px; display: grid; place-items: center; border: 2.5px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); color: #fff; font-weight: 700; font-size: 13px; }
+.pin .stem { width: 2px; height: 7px; background: #fff; }
+.searchbar { display: flex; align-items: center; gap: 8px; background: #ECE6DC; border-radius: 12px; padding: 9px 12px; color: var(--tx2); font-size: 15px; }
+.areabtn { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: #fff; border: 0; border-radius: 18px; padding: 7px 14px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,.15); cursor: pointer; display: flex; gap: 6px; align-items: center; color: var(--ink); }
+.ig { display: flex; flex-direction: column; background: #fff; min-height: 100%; }
+.ig .top { display: flex; align-items: center; gap: 10px; padding: 8px 14px; }
+.ig .photo { aspect-ratio: 1; background: linear-gradient(135deg, #E9C9A9 0%, #C4714F 55%, #7D4A35 100%); position: relative; }
+.ig .photo::after { content: ""; position: absolute; inset: 22% 26%; border-radius: 48% 52% 40% 60%; background: radial-gradient(circle at 40% 30%, #F4DCC4, #B9734F 60%, #6B3F2C); opacity: .7; }
+.ig .acts { display: flex; gap: 14px; padding: 10px 14px 4px; align-items: center; }
+.ig .cap { padding: 4px 14px 16px; font-size: 14px; }
+.share-apps { display: flex; gap: 16px; overflow-x: auto; padding: 4px 0; }
+.share-apps button { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; flex: none; color: #1C1C1A; }
+.share-apps .appi { width: 58px; height: 58px; border-radius: 14px; display: grid; place-items: center; }
+.pulse { box-shadow: 0 0 0 0 rgba(196,113,79,.6); animation: pulse 1.6s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(196,113,79,0); } 100% { box-shadow: 0 0 0 0 rgba(196,113,79,0); } }
+.spinner { width: 28px; height: 28px; border: 3px solid #E4DDD2; border-top-color: var(--ink); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.sharecard { width: 100%; aspect-ratio: 9/16; max-height: 470px; margin: 0 auto; border-radius: 18px; padding: 22px 18px; display: flex; flex-direction: column; gap: 12px; background: #FAF7F2; box-shadow: 0 8px 24px rgba(0,0,0,.12); max-width: 265px; }
+.qrcard { background: #fff; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 4px 14px rgba(0,0,0,.06); text-align: center; }
+.qrcard .qr { width: 170px; height: 170px; display: grid; place-items: center; }
+.qrcard .qr svg, .qrcard .qr img { width: 100%; height: 100%; image-rendering: pixelated; }
+.list-gap { display: flex; flex-direction: column; gap: 8px; }
+.sec { font-size: 13px; font-weight: 600; color: var(--tx2); text-transform: uppercase; letter-spacing: .05em; margin: 4px 0 -4px; }
+.settings { background: #fff; border-radius: 12px; overflow: hidden; }
+.settings button { width: 100%; border: 0; background: none; padding: 13px 14px; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; border-bottom: 1px solid var(--sep); color: var(--tx); font-size: 15px; }
+.settings button:last-child { border-bottom: 0; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stats div { background: var(--surface); border-radius: 12px; padding: 10px; text-align: center; }
+.stats b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
+.stats span { font-size: 12px; color: var(--tx2); }
+@media (max-width: 900px) {
+  .stage { grid-template-columns: 1fr; gap: 28px; }
+  .side { position: static; order: -1; }
+  .tour { padding-top: 0; }
+  .chapters .d { display: none; }
+}
+@media (max-width: 420px) { .phone { height: 720px; border-radius: 44px; padding: 9px; } .screen { border-radius: 36px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="stage">
+  <section class="tour" aria-label="Guided tour">
+    <div class="brand"><img id="logo" alt="seva logo"><span>seva</span></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="tag">For iPhone</div>
+      <h1>Your people. Your wellness.</h1>
+      <p class="lede">seva keeps track of your stylist, nail tech, massage therapist and every other beauty and wellness spot you love. You can see who your friends trust (down to who to ask for) and book in one tap. Click through the phone, or follow the tour.</p>
+    </div>
+    <ol class="chapters" id="chapters"></ol>
+    <div class="ask">
+      <h2>Tell us what you think</h2>
+      <ol>
+        <li>Would you use this to keep track of your own people and places?</li>
+        <li>Would a friend's "who to ask for" beat Google or Yelp reviews for you?</li>
+        <li>Would you rather book inside seva than on the salon's own site?</li>
+        <li>What's missing, or what would stop you using it?</li>
+      </ol>
+      <p>Reply to whoever sent you this link. A sentence or two is plenty.</p>
+    </div>
+  </section>
+
+  <aside class="side" aria-label="seva app">
+    <div class="phone"><div class="screen" id="screen">
+      <div class="status"><span>9:41</span><span class="bat" aria-hidden="true"></span></div>
+      <div class="view" id="view"></div>
+      <nav class="tabs" id="tabs" aria-label="App tabs"></nav>
+      <div class="toast" id="toast" role="status"></div>
+      <div id="sheetHost"></div>
+    </div></div>
+    <div class="hint" id="hint"></div>
+    <div class="navrow">
+      <button id="prev" type="button">Back</button>
+      <button id="next" type="button" class="primary">Next</button>
+    </div>
+    <p class="note">Sample places and people. The real app runs on iPhone.</p>
+  </aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  // ── Icons (simple strokes standing in for SF Symbols) ────────
+  const P = {
+    hair: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.1 8.1 20 20M8.1 15.9 20 4"/>',
+    face: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
+    nails: '<path d="M9 21V10a3 3 0 0 1 6 0v11zM10.5 7V3h3v4"/>',
+    body: '<circle cx="12" cy="4.5" r="2"/><path d="M4 9.5c3 1 5 1.3 8 1.3s5-.3 8-1.3M12 10.8V15m0 0-4 6m4-6 4 6"/>',
+    bookmark: '<path d="M6 3h12v18l-6-4-6 4z"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+    people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.6 3-5.5 6-5.5s5.4 1.9 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.6c2.6.2 4 1.9 4.5 4.6"/>',
+    person: '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c.8-4 3.7-6 7.5-6s6.7 2 7.5 6"/>',
+    back: '<path d="M15 4 7 12l8 8"/>',
+    share: '<path d="M12 15V3m0 0L8 7m4-4 4 4"/><path d="M7 10H5v11h14V10h-2"/>',
+    bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/>',
+    camera: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6"/>',
+    map: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+    check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+    qr: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2M14 18v2h2M18 18h2v2"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+    x: '<path d="M6 6l12 12M18 6 6 18"/>',
+    heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    comment: '<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/>',
+    send: '<path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/>',
+    cal: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M15 14.5l1.6 1.6 2.4-3"/>',
+    lists: '<rect x="4" y="4" width="16" height="12" rx="2"/><path d="M7 20h10"/>',
+    contacts: '<circle cx="12" cy="9" r="3.4"/><path d="M5.5 20c.7-3.5 3.3-5.3 6.5-5.3s5.8 1.8 6.5 5.3"/><path d="M19 4v4M17 6h4"/>',
+    flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+    trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+    hand: '<path d="M7 12V6a1.5 1.5 0 0 1 3 0v5m0-6.5a1.5 1.5 0 0 1 3 0V11m0-5a1.5 1.5 0 0 1 3 0v6m0-3a1.5 1.5 0 0 1 3 0v4.5c0 4-2.7 6.5-6.5 6.5-2.6 0-4.3-1.2-5.8-3.4L4.5 13a1.5 1.5 0 0 1 2.5-1.5"/>',
+    pencil: '<path d="M4 20l1-4L16 5l3 3L8 19z"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
+  };
+  function ic(name, size, color, width) {
+    return '<svg width="' + (size || 22) + '" height="' + (size || 22) + '" viewBox="0 0 24 24" fill="none" stroke="' + (color || 'currentColor') +
+      '" stroke-width="' + (width || 1.8) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[name] + '</svg>';
+  }
+
+  // ── Sample data ──────────────────────────────────────────────
+  const CAT = {
+    hair: { label: 'Hair', color: '#C4714F', phrase: 'hair spots' },
+    face: { label: 'Face', color: '#C9698A', phrase: 'skin & face spots' },
+    nails: { label: 'Nails', color: '#A07BB5', phrase: 'nail spots' },
+    body: { label: 'Body', color: '#7D9E8C', phrase: 'massage & spa spots' }
+  };
+  const PLACES = {
+    juniper: { name: 'Juniper Hair Studio', cat: 'hair', area: '214 Mott St, Nolita', ig: 'juniperhair', x: 46, y: 46 },
+    lune: { name: 'Lune Nail Bar', cat: 'nails', area: '88 Orchard St, Lower East Side', ig: 'lunenailbar', x: 66, y: 55 },
+    stillwater: { name: 'Stillwater Bathhouse', cat: 'body', area: 'Kent Ave, Williamsburg', ig: 'stillwater.bath', x: 86, y: 30 },
+    kinship: { name: 'Kinship Acupuncture', cat: 'body', area: 'E 17th St, Union Square', x: 40, y: 18 },
+    saffron: { name: 'Saffron Skin Studio', cat: 'face', area: 'Bleecker St, West Village', ig: 'saffronskin', x: 22, y: 40 },
+    arlo: { name: 'Arlo Barbers', cat: 'hair', area: 'E 7th St, East Village', x: 62, y: 30 },
+    petal: { name: 'Petal Brow & Lash', cat: 'face', area: 'Spring St, SoHo', ig: 'petalbrows', x: 34, y: 58 },
+    knead: { name: 'Knead Massage Co.', cat: 'body', area: 'W 22nd St, Chelsea', x: 18, y: 16 },
+    gloss: { name: 'Gloss Lab', cat: 'nails', area: 'Franklin St, Greenpoint', x: 88, y: 12 },
+    halo: { name: 'Halo Head Spa', cat: 'hair', area: 'Mulberry St, Chinatown', x: 52, y: 72 },
+    ritual: { name: 'Ritual Facial Bar', cat: 'face', area: 'Lafayette St, NoHo', x: 50, y: 33 },
+    ember: { name: 'Ember Sauna House', cat: 'body', area: 'Grand St, Lower East Side', x: 72, y: 70 }
+  };
+  const FRIENDS = {
+    priya: { name: 'Priya Shah', user: 'priya', match: 92, followers: 41 },
+    maya: { name: 'Maya Chen', user: 'maya.c', match: 78, followers: 27 },
+    jordan: { name: 'Jordan Ellis', user: 'jordanellis', match: null, overlap: 2, followers: 12 },
+    // Well-known accounts: a public, verified profile and a private one
+    sienna: { name: 'Sienna Brooks', user: 'siennabrooks', match: null, followers: '128k', verified: true, suggested: true, bio: 'Beauty editor, NYC' },
+    leah: { name: 'Leah Park', user: 'leahpark', match: 86, followers: 88, private: true },
+    devon: { name: 'Devon Hale', user: 'devonhale', match: null, followers: '41k', private: true, suggested: true, bio: 'Stylist to stylists' }
+  };
+  // What friends logged: status, provider, service, rating
+  const VISITS = [
+    ['priya', 'juniper', 'been', 'Maria', 'Balayage', 9.5], ['maya', 'juniper', 'been', 'Maria', 'Cut & gloss', 9.0], ['jordan', 'juniper', 'been', 'Leo', 'Haircut', 8.0],
+    ['priya', 'lune', 'been', 'Kim', 'Gel mani', 9.0], ['maya', 'lune', 'want'],
+    ['jordan', 'stillwater', 'been', null, 'Contrast circuit', 9.0], ['priya', 'stillwater', 'been', null, 'Sauna + cold plunge', 8.5],
+    ['maya', 'saffron', 'been', 'Dr. Ana', 'Hydrafacial', 8.5], ['priya', 'knead', 'been', 'Tomás', 'Deep tissue', 9.0],
+    ['maya', 'kinship', 'been', 'Dr. Lin', 'Acupuncture', 8.8], ['jordan', 'gloss', 'been', 'Bea', 'Nail art', 8.2],
+    ['maya', 'petal', 'been', 'Rae', 'Brow lamination', 8.5], ['priya', 'ritual', 'want'], ['jordan', 'ember', 'been', null, 'Sauna', 7.8],
+    ['sienna', 'juniper', 'been', 'Maria', 'Gloss + blowout', 9.5], ['sienna', 'halo', 'been', 'Kenji', 'Head spa', 9.2], ['sienna', 'saffron', 'been', 'Dr. Ana', 'Hydrafacial', 9.0],
+    ['sienna', 'lune', 'been', 'Kim', 'Russian mani', 9.3], ['sienna', 'ember', 'been', null, 'Contrast circuit', 8.6],
+    ['devon', 'arlo', 'been', 'Dev', 'Fade', 9.0], ['devon', 'knead', 'been', 'Tomás', 'Deep tissue', 8.8]
+  ].map(v => ({ friend: v[0], place: v[1], status: v[2], provider: v[3] || null, service: v[4] || null, rating: v[5] || null }));
+  const MY = {
+    lune: { status: 'been', rating: 9.4, provider: 'Kim', service: 'Gel mani', price: 2, date: 'Oct 2' },
+    saffron: { status: 'been', rating: 9.0, provider: 'Dr. Ana', service: 'Hydrafacial', price: 3, date: 'Sep 20' },
+    knead: { status: 'been', rating: 8.5, provider: 'Tomás', service: 'Deep tissue, 60 min', price: 3, date: 'Sep 8' },
+    petal: { status: 'been', rating: 8.0, provider: 'Rae', service: 'Brow lamination', price: 2, from: 'Maya' },
+    arlo: { status: 'been', rating: 7.5, provider: 'Dev', service: 'Skin fade', price: 1 },
+    stillwater: { status: 'want', from: 'Priya' },
+    kinship: { status: 'want' },
+    gloss: { status: 'want' }
+  };
+
+  const CHAPTERS = [
+    { t: 'Sign in', d: 'Sign in with Apple or Google, then choose whether your list is public or private.', hint: 'Tap either sign-in button, then pick Public or Private.', go: () => reset({ login: true }) },
+    { t: 'Save from Instagram', d: 'See a great stylist on Instagram? Share the post to seva and it finds the place for you.', hint: 'Tap the share arrow on the post, then pick seva.', go: () => reset({ tab: 'list', stack: [{ type: 'ig' }] }) },
+    { t: 'Your list', d: 'Places you’ve been, ranked by your rating within each category, and places you want to try.', hint: 'Switch between Been and Want to Try, filter by category, or tap a place.', go: () => reset({ tab: 'list' }) },
+    { t: 'A place, through your friends', d: 'Who to ask for, what friends booked and rated, and Book buttons for the place’s site, phone, Instagram or directions.', hint: 'Scroll the profile. "Who to ask for" is the part people love.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'juniper' }] }) },
+    { t: 'Discover nearby', d: 'A map of salons, spas and studios around you, color-coded by category.', hint: 'Tap a pin or a category chip.', go: () => reset({ tab: 'discover' }) },
+    { t: 'Friends and taste match', d: 'Follow friends to browse their lists. Taste match shows how closely your ratings agree.', hint: 'Tap Priya to open her list.', go: () => reset({ tab: 'friends' }) },
+    { t: 'People you admire', d: 'Public profiles show anyone where someone goes, down to who they ask for. Verified people get a check. Private profiles approve followers.', hint: 'Open Sienna under People to follow, no follow needed. Then try Devon, who is private.', go: () => reset({ tab: 'friends' }) },
+    { t: 'Activity', d: 'Hear when a friend goes somewhere on your Want to Try list, and approve follow requests, then follow back.', hint: 'Approve Leah, then tap Follow back. She\u2019s private, so she approves you too.', go: () => reset({ tab: 'friends', stack: [{ type: 'activity' }] }) },
+    { t: 'Share your top list', d: 'Turn your favorites into a story-sized card for Instagram.', hint: 'This is the card seva makes from your Been list.', go: () => reset({ tab: 'list', sheet: { type: 'sharecard', cat: null } }) },
+    { t: 'Find us on seva', d: 'Stylists and salons get a link and QR code for their bio or front desk, so clients can save and recommend them.', hint: 'Scan the code with your phone camera if you like.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'lune' }], sheet: { type: 'qr', id: 'lune' } }) },
+    { t: 'Booking in seva', d: 'Book buttons go to the place’s own site today. We’re gauging interest in booking without leaving seva.', hint: 'Below the Book buttons. Would you tap Notify me?', go: () => { reset({ tab: 'list', stack: [{ type: 'place', id: 'knead' }] }); setTimeout(() => { const el = document.getElementById('bookhere'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60); } }
+  ];
+
+  // ── State ────────────────────────────────────────────────────
+  let S = {};
+  let chapter = 0;
+  function reset(next) {
+    S = Object.assign({ login: false, tab: 'list', stack: [], sheet: null, listTab: 'been', filter: null, dfilter: null, following: { priya: true, maya: true, jordan: true, sienna: false, devon: false }, requested: {}, isPrivate: false, privPick: false, joined: false, leahReq: 'pending' }, keepFrom(S), next);
+    render();
+  }
+  // Follows, requests and privacy carry across tour steps.
+  function keepFrom(s) {
+    const k = { saved: s.saved || {}, joined: !!s.joined };
+    if (s.following) k.following = s.following;
+    if (s.requested) k.requested = s.requested;
+    if (s.isPrivate !== undefined) k.isPrivate = s.isPrivate;
+    if (s.leahReq) k.leahReq = s.leahReq;
+    return k;
+  }
+  function seal(size) {
+    return '<svg width="' + (size || 14) + '" height="' + (size || 14) + '" viewBox="0 0 24 24" role="img" aria-label="Verified" style="flex:none"><path fill="#2B2A27" d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.5 2-.4 3.2-3.2.5-2 2.5L12 20.6l-2.9 1.4-2-2.5-3.2-.5-.4-3.2-2.5-2 1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z"/><path fill="none" stroke="#FAF7F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 12.3l2.7 2.7L16.2 9.4"/></svg>';
+  }
+  // Progress toward a taste match: filled dot per place you've both rated, out of 3
+  function dots(n) {
+    let d = '';
+    for (let i = 0; i < 3; i++) d += '<span style="width:8px;height:8px;border-radius:4px;border:1.2px solid #2B2A27;background:' + (i < n ? '#2B2A27' : 'transparent') + '"></span>';
+    return '<span style="display:inline-flex;gap:3px;align-items:center" role="img" aria-label="' + Math.min(n, 3) + ' of 3 places in common">' + d + '</span>';
+  }
+  function followLabel(k) { return S.following[k] ? 'Following' : S.requested[k] ? 'Requested' : 'Follow'; }
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmt = r => (r % 1 === 0 ? r.toFixed(0) : r.toFixed(1));
+  const dollars = n => n ? '$'.repeat(n) : null;
+
+  function mine(id) { return S.saved[id] || MY[id] || null; }
+  function myItems() { return Object.keys(PLACES).filter(id => mine(id)).map(id => Object.assign({ id: id }, mine(id))); }
+  function friendsOn(id) { return VISITS.filter(v => v.place === id && S.following[v.friend]); }
+
+  let toastTimer;
+  function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800); }
+
+  function push(screen) { S.stack.push(screen); S.sheet = null; render(true); }
+  function pop() { S.stack.pop(); render(true); }
+  function openSheet(sheet) { S.sheet = sheet; renderSheet(); }
+  function closeSheet() { S.sheet = null; renderSheet(); }
+
+  // ── Building blocks ──────────────────────────────────────────
+  function catIcon(cat, size) {
+    const c = CAT[cat];
+    return '<span class="cicon" style="background:' + c.color + '1F;color:' + c.color + '">' + ic(cat, size || 20) + '</span>';
+  }
+  function catPill(cat) {
+    const c = CAT[cat];
+    return '<span class="catpill" style="background:' + c.color + '1F;color:' + c.color + '">' + ic(cat, 14) + c.label + '</span>';
+  }
+  function avatar(name, size) { return '<span class="av" style="width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * .42) + 'px">' + esc(name[0]) + '</span>'; }
+  function friendsBadge(id) {
+    const fs = friendsOn(id);
+    if (!fs.length) return '';
+    const names = fs.map(v => FRIENDS[v.friend].name.split(' ')[0]);
+    return '<div class="friendsaved"><span class="faces">' + names.slice(0, 3).map(n => '<i>' + n[0] + '</i>').join('') + '</span><span>' +
+      (names.length === 1 ? names[0] + ' saved this' : names.slice(0, 2).join(', ') + (names.length > 2 ? ' +' + (names.length - 2) : '') + ' saved this') + '</span></div>';
+  }
+  function bar(title, right) {
+    return '<div class="bar"><button class="ib text" data-act="back" aria-label="Back">' + ic('back', 22, null, 2.2) + '<span>Back</span></button><span class="title">' + esc(title || '') + '</span>' + (right || '<span style="width:44px"></span>') + '</div>';
+  }
+
+  // ── Screens ──────────────────────────────────────────────────
+  function screenLogin() {
+    return '<div style="height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:24px;text-align:center">' +
+      '<img src="' + LOGO + '" alt="" style="width:76px">' +
+      '<div style="font-size:34px;font-weight:700;letter-spacing:-.02em">seva</div>' +
+      '<p class="muted" style="font-size:16px">Your people. Your wellness.</p>' +
+      '<p class="muted" style="max-width:260px">Save practitioners you love — from Instagram, friends, or personal experience.</p>' +
+      '<div style="width:100%;display:flex;flex-direction:column;gap:10px;margin-top:24px">' +
+      '<button class="btn" data-act="signin" style="background:#000;color:#fff"><svg width="16" height="18" viewBox="0 0 17 20" aria-hidden="true"><path fill="#fff" d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9C3.6 4.8 2 5.8 1 7.4c-1.9 3.3-.5 8.2 1.4 10.9.9 1.3 2 2.8 3.4 2.7 1.4-.1 1.9-.9 3.5-.9s2.1.9 3.5.9 2.4-1.3 3.3-2.7c1-1.5 1.5-3 1.5-3.1-.1 0-2.5-1-2.5-4.6zM11.5 3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5z"/></svg>Sign in with Apple</button>' +
+      '<button class="btn" data-act="signin" style="background:#fff;color:#1C1C1A;border:1px solid #DDD6CB"><b style="font-size:17px;color:#4285F4">G</b>Sign in with Google</button>' +
+      '</div><p class="muted" style="font-size:12px;margin-top:8px">By continuing, you agree to seva’s <u>Terms of Use</u> and <u>Privacy Policy</u>.</p></div>';
+  }
+
+  function screenList() {
+    const items = myItems();
+    const been = items.filter(i => i.status === 'been'), want = items.filter(i => i.status === 'want');
+    let shown = S.listTab === 'been' ? been : want;
+    if (S.filter) shown = shown.filter(i => PLACES[i.id].cat === S.filter);
+    if (S.listTab === 'been') shown.sort((a, b) => b.rating - a.rating);
+    const rankIn = {};
+    let html = '<div class="pad"><div style="display:flex;justify-content:space-between;align-items:flex-end"><h2 class="big">My List</h2><div style="display:flex">' +
+      (S.listTab === 'been' ? '<button class="ib" data-act="sharecard" aria-label="Share your top list">' + ic('share') + '</button>' : '') +
+      '<button class="ib" data-act="addmanual" aria-label="Add practitioner">' + ic('plus') + '</button></div></div>' +
+      '<div class="seg"><button data-act="listtab" data-v="been" class="' + (S.listTab === 'been' ? 'on' : '') + '">Been · ' + been.length + '</button><button data-act="listtab" data-v="want" class="' + (S.listTab === 'want' ? 'on' : '') + '">Want to Try · ' + want.length + '</button></div>' +
+      '<div class="chips">' + chip('All', null, S.filter, 'filter') + Object.keys(CAT).map(c => chip(CAT[c].label, c, S.filter, 'filter')).join('') + '</div><div class="list-gap">';
+    if (!shown.length) {
+      html += '<div class="empty"><p class="muted">' + (S.listTab === 'want' ? 'Nothing here yet. Save places from Discover or a friend’s list.' : 'No ' + (S.filter ? CAT[S.filter].phrase : 'places') + ' yet. Log a visit to rank it here.') + '</p></div>';
+    }
+    shown.forEach(i => {
+      const p = PLACES[i.id], c = CAT[p.cat];
+      rankIn[p.cat] = (rankIn[p.cat] || 0) + 1;
+      // rank within category among all been items (not just filtered view)
+      const rank = been.filter(b => PLACES[b.id].cat === p.cat).sort((a, b) => b.rating - a.rating).findIndex(b => b.id === i.id) + 1;
+      const detail = [i.provider ? 'Saw ' + i.provider : null, i.service].filter(Boolean).join(' · ');
+      html += '<button class="row tint" style="--tint:' + c.color + '14" data-act="place" data-id="' + i.id + '">' +
+        (S.listTab === 'been' ? '<span class="rank" style="background:' + c.color + '" aria-label="Ranked ' + rank + ' in ' + c.label + '">' + rank + '</span>' : catIcon(p.cat, 18)) +
+        '<span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(detail || p.area) + '</span>' +
+        (i.from ? '<span class="pill">from ' + esc(i.from) + '</span>' : '') + (i.fresh ? '<span class="pill">Saved from Instagram</span>' : '') + '</span>' +
+        (i.rating ? '<span class="score">' + fmt(i.rating) + '</span>' : '') + '</button>';
+    });
+    html += '</div>';
+    if (S.listTab === 'been') html += '<p class="muted" style="font-size:12px;text-align:center">Ranked by your rating within each category. Comparing a haircut to a massage doesn’t make sense.</p>';
+    return html + '</div>';
+  }
+  function chip(label, val, cur, act) {
+    const on = cur === val;
+    const color = val ? CAT[val].color : '#2B2A27';
+    return '<button class="chip' + (on ? ' on' : '') + '" style="' + (on ? 'background:' + color : '') + '" data-act="' + act + '" data-v="' + (val || '') + '">' +
+      (val ? '<span style="color:' + (on ? '#fff' : color) + ';display:flex">' + ic(val, 14) + '</span>' : '') + label + '</button>';
+  }
+
+  function screenPlace(id) {
+    const p = PLACES[id], c = CAT[p.cat], m = mine(id), fv = friendsOn(id);
+    let html = bar('', '<button class="ib" data-act="qr" data-id="' + id + '" aria-label="Share this place">' + ic('share') + '</button>') + '<div class="pad">';
+    html += '<div class="lookaround" style="background:linear-gradient(160deg,' + c.color + '55, #E9E1D4 45%, #CFC6B8)">' + streetScene(c.color) + '<span>Look Around</span></div>';
+    html += '<div style="display:flex;flex-direction:column;gap:8px">' + catPill(p.cat) + '<div style="font-size:24px;font-weight:700;letter-spacing:-.01em;line-height:1.2">' + esc(p.name) + '</div><div class="muted">' + esc(p.area) + '</div></div>';
+    html += friendsBadge(id);
+    if (m) {
+      if (m.status === 'been') {
+        const det = [m.provider ? 'Saw ' + m.provider : null, m.service, m.date, dollars(m.price)].filter(Boolean).join(' · ');
+        html += '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h3>Your take</h3><span style="font-weight:500;font-size:14px">Edit</span></div><div style="font-size:20px;font-weight:700">' + fmt(m.rating) + ' / 10</div>' + (det ? '<div style="font-size:14px">' + esc(det) + '</div>' : '') + '</div>';
+      } else {
+        html += '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h3>On your Want to Try list</h3><button class="ib text" data-act="logvisit" data-id="' + id + '" style="font-size:14px;font-weight:600;min-height:32px">Log a visit</button></div></div>';
+      }
+    }
+    // Who to ask for
+    const prov = {};
+    fv.filter(v => v.status === 'been' && v.provider).forEach(v => { (prov[v.provider] = prov[v.provider] || { seen: [], r: [] }); prov[v.provider].seen.push(FRIENDS[v.friend].name.split(' ')[0]); prov[v.provider].r.push(v.rating); });
+    if (m && m.status === 'been' && m.provider) { (prov[m.provider] = prov[m.provider] || { seen: [], r: [] }); prov[m.provider].seen.push('You'); prov[m.provider].r.push(m.rating); }
+    const provs = Object.keys(prov).map(n => ({ n: n, seen: prov[n].seen, avg: prov[n].r.reduce((a, b) => a + b, 0) / prov[n].r.length })).sort((a, b) => b.seen.length - a.seen.length || b.avg - a.avg);
+    html += '<div class="card"><h3>Who to ask for</h3>' + (provs.length ? provs.map(pr =>
+      '<div style="display:flex;gap:12px;align-items:flex-start"><span style="color:' + c.color + ';display:flex;padding-top:2px">' + ic('person', 22) + '</span><span class="grow"><span style="font-weight:600">' + esc(pr.n) + '</span><span class="sub">Seen by ' + esc(listJoin(pr.seen)) + '</span></span><span class="score">' + pr.avg.toFixed(1) + '</span></div>').join('') :
+      '<p class="muted">No one’s named a provider here yet. Add who you saw when you log a visit — it’s the most useful thing friends can know.</p>') + '</div>';
+    if (fv.length) {
+      html += '<div style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:0;font-size:17px">Friends</h3>' + fv.map(v => {
+        const f = FRIENDS[v.friend];
+        const d = [v.status === 'want' ? 'Wants to try' : null, v.provider ? 'saw ' + v.provider : null, v.service].filter(Boolean).join(' · ');
+        return '<div style="display:flex;gap:10px;align-items:center">' + avatar(f.name, 32) + '<span class="grow"><span style="font-weight:500;font-size:14px">' + esc(f.name) + '</span>' + (d ? '<span class="sub">' + esc(d) + '</span>' : '') + '</span>' + (v.rating ? '<span class="score">' + fmt(v.rating) + '</span>' : '') + '</div>';
+      }).join('') + '</div>';
+    }
+    // Also loved by: verified public profiles, whether or not you follow them
+    const loved = VISITS.filter(v => v.place === id && v.status === 'been' && v.rating >= 8 && FRIENDS[v.friend].verified && !FRIENDS[v.friend].private);
+    if (loved.length) {
+      html += '<div style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:0;font-size:17px">Also loved by</h3>' + loved.map(v => {
+        const f = FRIENDS[v.friend];
+        const d = [v.provider ? 'saw ' + v.provider : null, v.service].filter(Boolean).join(' · ');
+        return '<button class="row" data-act="friend" data-id="' + v.friend + '" style="padding:10px 12px">' + avatar(f.name, 32) + '<span class="grow"><span style="font-weight:600;font-size:14px;display:flex;gap:4px;align-items:center">' + esc(f.name) + seal(12) + '</span><span class="sub">' + esc(d) + '</span></span><span class="score">' + fmt(v.rating) + '</span></button>';
+      }).join('') + '</div>';
+    }
+    // Book
+    html += '<div style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:0;font-size:17px">Book</h3>' +
+      bookBtn('info', 'Hours, photos & reviews', 'Opens Apple’s place card') +
+      bookBtn('globe', 'Book online', 'Opens the place’s booking site') +
+      bookBtn('phone', 'Call (212) 555-0148', 'Opens your phone app') +
+      (p.ig ? bookBtn('camera', 'Message @' + p.ig, 'Opens Instagram') : '') +
+      bookBtn('map', 'Directions', 'Opens Apple Maps') + '</div>';
+    html += '<div class="interest" id="bookhere"><div style="display:flex;gap:12px;align-items:flex-start"><span style="display:flex;padding-top:1px">' + ic('cal', 22) + '</span><span class="grow"><span style="font-weight:600;font-size:14px">Book without leaving seva</span><span class="sub">We’re exploring in-app booking, so you could see open times and confirm in a few taps.</span></span></div>' +
+      '<div style="padding-left:34px">' + (S.joined ? '<span style="display:inline-flex;gap:6px;align-items:center;font-weight:600;font-size:13px;min-height:36px">' + ic('check', 16, null, 2.4) + 'You’re on the list</span>' : '<button class="btn tone center" data-act="join" style="width:auto;padding:8px 16px;font-size:14px">Notify me</button>') + '</div></div>';
+    if (!m) html += '<button class="btn fill" data-act="save" data-id="' + id + '">' + ic('bookmark', 18) + 'Save to My List</button>';
+    return html + '</div>';
+  }
+  function bookBtn(icon, label, what) { return '<button class="btn tone" data-act="toast" data-msg="' + esc(what) + '">' + ic(icon, 20) + esc(label) + '</button>'; }
+  function listJoin(a) { return a.length < 3 ? a.join(' and ') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+  function streetScene(color) {
+    return '<svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true"><rect x="0" y="105" width="340" height="45" fill="#B9B0A2"/><rect x="0" y="100" width="340" height="7" fill="#D8D0C4"/>' +
+      '<rect x="20" y="20" width="90" height="82" fill="#E8DFD2"/><rect x="118" y="34" width="110" height="68" fill="#F1E9DD"/><rect x="236" y="12" width="90" height="90" fill="#DCD2C4"/>' +
+      '<rect x="128" y="62" width="90" height="40" fill="' + color + '" opacity=".85"/><rect x="136" y="70" width="34" height="26" fill="#FBF6EE" opacity=".7"/><rect x="176" y="70" width="34" height="26" fill="#FBF6EE" opacity=".7"/>' +
+      '<rect x="124" y="50" width="98" height="10" fill="' + color + '"/><rect x="34" y="34" width="22" height="26" fill="#C9BFB1"/><rect x="70" y="34" width="22" height="26" fill="#C9BFB1"/><rect x="250" y="28" width="24" height="28" fill="#C5BAAA"/><rect x="288" y="28" width="24" height="28" fill="#C5BAAA"/></svg>';
+  }
+
+  function screenDiscover() {
+    const ids = Object.keys(PLACES).filter(id => !S.dfilter || PLACES[id].cat === S.dfilter);
+    let html = '<div class="pad" style="gap:12px"><div class="searchbar">' + ic('search', 18) + '<span>Search salons, spas or a neighborhood</span></div>' +
+      '<div class="chips">' + chip('All', null, S.dfilter, 'dfilter') + Object.keys(CAT).map(c => chip(CAT[c].label, c, S.dfilter, 'dfilter')).join('') + '</div>' +
+      '<div class="map">' + mapSVG() + '<button class="areabtn" data-act="toast" data-msg="Searching this area">' + ic('search', 14, null, 2.2) + 'Search this area</button>';
+    ids.forEach(id => {
+      const p = PLACES[id], c = CAT[p.cat];
+      html += '<button class="pin" style="left:' + p.x + '%;top:' + (p.y + 14) + '%" data-act="place" data-id="' + id + '" aria-label="' + esc(p.name) + '"><span class="dot" style="background:' + c.color + '">' + ic(p.cat, 16, '#fff', 2) + '</span><span class="stem"></span></button>';
+    });
+    if (!S.dfilter) html += '<button class="pin" style="left:28%;top:86%" data-act="cluster" aria-label="3 places"><span class="dot" style="background:#2B2A27">3</span><span class="stem"></span></button>';
+    html += '</div><div style="display:flex;justify-content:space-between;align-items:baseline"><h3 style="margin:0;font-size:17px">' + (S.dfilter ? CAT[S.dfilter].label : 'Nearby') + '</h3><span class="sub">' + ids.length + ' places</span></div><div class="list-gap">';
+    ids.slice(0, 6).forEach(id => {
+      const p = PLACES[id], n = friendsOn(id).length;
+      html += '<button class="row" data-act="place" data-id="' + id + '">' + catIcon(p.cat) + '<span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + '</span>' + (n ? '<span class="pill">' + n + (n === 1 ? ' friend' : ' friends') + ' saved this</span>' : '') + '</span></button>';
+    });
+    return html + '</div></div>';
+  }
+  function mapSVG() {
+    let s = '<svg viewBox="0 0 340 330" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true" style="position:absolute;inset:0"><rect width="340" height="330" fill="#EEE9E0"/>' +
+      '<path d="M262 0 C250 80 300 140 268 220 S280 300 300 330 L340 330 L340 0Z" fill="#CFE0E6"/><rect x="96" y="40" width="64" height="44" rx="4" fill="#D9E4D2"/><rect x="20" y="200" width="44" height="60" rx="4" fill="#D9E4D2"/><g stroke="#FFFFFF" stroke-width="5">';
+    for (let i = -2; i < 9; i++) s += '<line x1="' + (i * 42) + '" y1="0" x2="' + (i * 42 + 60) + '" y2="330"/>';
+    for (let j = 0; j < 9; j++) s += '<line x1="0" y1="' + (j * 40 + 10) + '" x2="300" y2="' + (j * 40 - 10) + '"/>';
+    return s + '</g><g stroke="#FFF6E5" stroke-width="9"><line x1="0" y1="150" x2="290" y2="120"/><line x1="140" y1="0" x2="190" y2="330"/></g></svg>';
+  }
+
+  function screenFriends() {
+    let html = '<div class="pad"><div style="display:flex;justify-content:space-between;align-items:flex-end"><h2 class="big">Friends</h2><button class="ib" data-act="activity" aria-label="Activity" style="position:relative">' + ic('bell') + '<span class="badge" style="position:absolute;top:4px;right:4px;background:#B4483C;color:#fff;font-size:10px;border-radius:9px;min-width:16px;height:16px;display:grid;place-items:center">2</span></button></div>' +
+      '<div class="searchbar">' + ic('search', 18) + '<span>Search by name or username</span></div>';
+    const suggested = Object.keys(FRIENDS).filter(k => FRIENDS[k].suggested && !S.following[k]);
+    if (suggested.length) html += '<div class="sec">People to follow</div><div class="chips" style="gap:10px">';
+    suggested.forEach(k => {
+      const f = FRIENDS[k];
+      html += '<div style="flex:none;width:148px;background:var(--surface);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">' +
+        '<button class="ib" data-act="friend" data-id="' + k + '" style="padding:0;min-height:0" aria-label="Open ' + esc(f.name) + '">' + avatar(f.name, 52) + '</button>' +
+        '<span style="display:flex;gap:4px;align-items:center;font-weight:600;font-size:14px">' + esc(f.name) + (f.verified ? seal(13) : '') + '</span>' +
+        '<span class="sub" style="font-size:12px">' + (f.private ? ic('lock', 11) + ' Private' : 'Public') + ' · ' + f.followers + '</span>' +
+        '<button class="btn ' + (S.requested[k] ? 'tone' : 'fill') + ' center" data-act="follow" data-id="' + k + '" style="padding:7px 10px;font-size:13px">' + followLabel(k) + '</button></div>';
+    });
+    if (suggested.length) html += '</div>';
+    html += '<div class="sec">Following</div><div class="list-gap">';
+    Object.keys(FRIENDS).filter(k => S.following[k]).forEach(k => {
+      const f = FRIENDS[k];
+      html += '<button class="row" data-act="friend" data-id="' + k + '">' + avatar(f.name, 40) + '<span class="grow"><span class="name" style="display:flex;gap:4px;align-items:center">' + esc(f.name) + (f.verified ? seal(13) : '') + '</span><span class="sub">@' + esc(f.user) + '</span></span>' +
+        (f.match ? '<span class="pill" style="background:#fff">' + f.match + '% taste match</span>' : dots(f.overlap || 0)) + '</button>';
+    });
+    if (Object.keys(FRIENDS).some(k => S.following[k] && !FRIENDS[k].match)) {
+      html += '<p class="muted" style="font-size:12px;display:flex;gap:6px;align-items:center;margin-top:-4px">' + dots(2) + '<span>Rate 3 of the same places to unlock your taste match.</span></p>';
+    }
+    html += '</div><div class="card"><h3>Skip the reviews. Ask your people.</h3><p class="muted">Add friends whose taste you trust and see where they go, and who they ask for.</p><div style="display:flex;gap:8px">' +
+      '<button class="btn tone center" data-act="toast" data-msg="Finds friends from your contacts">' + ic('contacts', 18) + 'From contacts</button><button class="btn fill" data-act="toast" data-msg="Opens the share sheet with your invite link">' + ic('share', 18) + 'Invite</button></div>' +
+      '</div>';
+    return html + '</div>';
+  }
+
+  function screenFriend(k) {
+    const f = FRIENDS[k];
+    const vs = VISITS.filter(v => v.friend === k && v.status === 'been').sort((a, b) => b.rating - a.rating);
+    const canSee = !f.private || S.following[k];
+    let html = bar('@' + f.user, '<span class="ib" aria-hidden="true">•••</span>') + '<div class="pad" style="align-items:stretch">' +
+      '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">' + avatar(f.name, 72) + '<div style="font-size:22px;font-weight:700;display:flex;gap:6px;align-items:center">' + esc(f.name) + (f.verified ? seal(20) : '') + '</div>' +
+      (f.bio ? '<div class="sub">' + esc(f.bio) + '</div>' : '') +
+      '<div class="sub">' + (f.private ? ic('lock', 12) + ' Private profile' : (f.suggested ? 'Public profile' : '')) + (f.suggested ? ' · ' : '') + f.followers + ' followers' + (canSee ? ' · ' + vs.length + ' places' : '') + '</div>' +
+      (f.match && S.following[k] ? '<span class="pill" style="background:var(--surface);font-size:13px;padding:4px 12px">' + f.match + '% taste match</span><p class="muted" style="font-size:12px;max-width:250px">Based on how closely your ratings agree on places you’ve both been.</p>' :
+       S.following[k] ? dots(f.overlap || 0) + '<p class="muted" style="font-size:12px;max-width:250px">Rate 3 of the same places to unlock your taste match.</p>' : '') +
+      '<button class="btn ' + (S.following[k] || S.requested[k] ? 'tone' : 'fill') + ' center" style="width:auto;padding:8px 24px" data-act="follow" data-id="' + k + '">' + (S.following[k] ? ic('check', 16, null, 2.4) : '') + followLabel(k) + '</button></div>';
+    if (!canSee) {
+      return html + '<div class="empty">' + ic('lock', 26) + '<b>This profile is private</b><p class="muted">' + (S.requested[k] ? 'You\u2019ll see their list once they approve your request.' : 'Follow ' + esc(f.name.split(' ')[0]) + ' to ask to see their list.') + '</p></div></div>';
+    }
+    if (!S.following[k]) html += '<p class="muted" style="text-align:center;font-size:13px">Public profile: you can see their list without following.</p>';
+    html += '<div class="sec">Been</div><div class="list-gap">';
+    const rk = {};
+    vs.forEach(v => {
+      const p = PLACES[v.place], c = CAT[p.cat];
+      rk[p.cat] = (rk[p.cat] || 0) + 1;
+      const mineToo = mine(v.place);
+      html += '<button class="row tint" style="--tint:' + c.color + '14" data-act="place" data-id="' + v.place + '"><span class="rank" style="background:' + c.color + '">' + rk[p.cat] + '</span><span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc([v.provider ? 'Saw ' + v.provider : null, v.service].filter(Boolean).join(' · ')) + '</span>' +
+        (mineToo ? '<span class="pill">On your list</span>' : '') + '</span><span class="score">' + fmt(v.rating) + '</span></button>';
+    });
+    return html + '</div></div>';
+  }
+
+  function screenActivity() {
+    const items = [
+      { who: 'Priya Shah', text: ' went to ', place: 'stillwater', extra: ' — on your Want to Try list', when: '2 hours ago' },
+      { who: 'Maya Chen', text: ' went to ', place: 'kinship', extra: ' · saw Dr. Lin · rated 8.8', when: 'Yesterday' },
+      { who: 'Jordan Ellis', text: ' started following you', when: '3 days ago' }
+    ];
+    let html = bar('Activity') + '<div class="pad"><div class="list-gap">';
+    if (S.leahReq === 'pending') {
+      html += '<div class="row" style="cursor:default">' + avatar('Leah Park', 36) + '<span class="grow"><span style="font-size:14px"><b>Leah Park</b> asked to follow you</span><span class="sub" style="font-size:12px">Just now</span></span>' +
+        '<button class="btn fill center" data-act="leahapprove" style="width:auto;padding:7px 12px;font-size:13px">Approve</button>' +
+        '<button class="ib" data-act="leahdecline" aria-label="Decline Leah" style="min-width:36px;min-height:36px">' + ic('x', 18) + '</button></div>';
+    } else if (S.leahReq === 'approved') {
+      const st = S.following.leah ? 'Following' : S.requested.leah ? 'Requested' : 'Follow back';
+      html += '<div class="row" style="cursor:default;flex-wrap:wrap">' + avatar('Leah Park', 36) + '<span class="grow"><span style="font-size:14px"><b>Leah Park</b> now follows you</span><span class="sub" style="font-size:12px">' +
+        (S.requested.leah ? 'Leah is private. Once she approves you, you\u2019ll both see your taste match.' : 'Follow back to see each other\u2019s lists and your taste match.') + '</span></span>' +
+        '<button class="btn ' + (st === 'Follow back' ? 'fill' : 'tone') + ' center" data-act="follow" data-id="leah" style="width:auto;padding:7px 12px;font-size:13px">' + st + '</button></div>';
+    }
+    items.forEach(it => {
+      html += '<button class="row" ' + (it.place ? 'data-act="place" data-id="' + it.place + '"' : 'data-act="friend" data-id="jordan"') + '>' + avatar(it.who, 36) +
+        '<span class="grow"><span style="font-size:14px"><b>' + esc(it.who) + '</b>' + esc(it.text) + (it.place ? '<b>' + esc(PLACES[it.place].name) + '</b>' + esc(it.extra) : '') + '</span><span class="sub" style="font-size:12px">' + it.when + '</span></span></button>';
+    });
+    html += '</div><div class="card"><h3>Get notified</h3><p class="muted">Know when a friend goes to a place on your Want to Try list — and who they saw.</p><button class="btn tone center" data-act="toast" data-msg="Asks for notification permission">Turn on notifications</button></div>';
+    return html + '</div>';
+  }
+
+  function screenProfile() {
+    const items = myItems();
+    return '<div class="pad"><h2 class="big">Profile</h2><div style="display:flex;gap:14px;align-items:center">' + avatar('Alex', 56) + '<div style="display:flex;flex-direction:column"><b style="font-size:18px">Alex Rivera</b><span class="sub">@alexr</span></div></div>' +
+      '<div class="stats"><div><b>' + items.filter(i => i.status === 'been').length + '</b><span>Been</span></div><div><b>' + items.filter(i => i.status === 'want').length + '</b><span>Want to Try</span></div><div><b>3</b><span>Following</span></div></div>' +
+      '<div class="settings"><button data-act="privtoggle"><span style="display:flex">' + ic('lock', 20) + '</span><span style="flex:1">Private profile</span><span style="width:46px;height:28px;border-radius:14px;background:' + (S.isPrivate ? '#2B2A27' : '#D9D2C7') + ';position:relative;flex:none"><span style="position:absolute;top:2px;' + (S.isPrivate ? 'right:2px' : 'left:2px') + ';width:24px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span></button></div>' +
+      '<p class="muted" style="font-size:12px;margin-top:-8px">' + (S.isPrivate ? 'Only people you approve can see your list.' : 'Anyone on seva can see your list and follow you.') + '</p>' +
+      '<div class="settings">' + setRow('pencil', 'Edit profile') + setRow('bell', 'Notifications') + setRow('lists', 'Lists') + setRow('hand', 'Blocked accounts') + '</div>' +
+      '<div class="settings">' + setRow('info', 'Privacy Policy') + setRow('flag', 'Terms of Use') + setRow('comment', 'Contact & Support') + '</div>' +
+      '<div class="settings"><button data-act="toast" data-msg="Signs you out">Sign Out</button><button data-act="toast" data-msg="Permanently deletes your account and data" style="color:#B4483C">' + ic('trash', 20, '#B4483C') + 'Delete Account</button></div></div>';
+  }
+  function setRow(icon, label) { return '<button data-act="toast" data-msg="' + esc(label) + '">' + ic(icon, 20) + esc(label) + '</button>'; }
+
+  function screenIG() {
+    return '<div class="ig"><div class="top">' + avatar('M', 32) + '<div style="display:flex;flex-direction:column;line-height:1.2"><b style="font-size:14px">maria.colors</b><span style="font-size:12px;color:#777">Juniper Hair Studio</span></div><button class="ib" data-act="back" aria-label="Close Instagram" style="margin-left:auto">' + ic('x', 20) + '</button></div>' +
+      '<div class="photo"></div><div class="acts">' + ic('heart', 25) + ic('comment', 24) + '<button class="ib pulse" data-act="igshare" aria-label="Share this post" style="min-width:38px;min-height:38px;border-radius:19px">' + ic('send', 23) + '</button><span style="margin-left:auto">' + ic('bookmark', 24) + '</span></div>' +
+      '<div class="cap"><b>maria.colors</b> Warm honey balayage for fall ✨ Book me at Juniper Hair Studio, Nolita 📍 DM to book!<div style="color:#999;font-size:12px;margin-top:6px">2,184 likes · View all 96 comments</div></div>' +
+      '<p class="muted" style="text-align:center;padding:0 24px 24px;font-size:12px">This stands in for the Instagram app.</p></div>';
+  }
+
+  function screenDetect() {
+    if (!S.detected) {
+      setTimeout(() => { S.detected = true; render(); }, 1100);
+      return '<div class="empty" style="height:100%;justify-content:center"><div class="spinner"></div><b>Finding the place…</b><p class="muted">Reading the caption and checking Apple Maps nearby.</p></div>';
+    }
+    const cands = [['juniper', '0.3 mi'], ['halo', '0.6 mi'], ['arlo', '1.1 mi']];
+    let html = bar('Save to seva') + '<div class="pad"><div class="card" style="background:#fff;flex-direction:row;align-items:center;gap:10px">' + avatar('M', 34) + '<div class="grow"><span class="sub">Shared from Instagram</span><span style="font-size:14px;font-weight:600">@maria.colors</span></div></div>' +
+      '<div><div style="font-size:20px;font-weight:700">Detected: Juniper Hair Studio</div><p class="muted">Tap the right one to save it.</p></div><div class="list-gap">';
+    cands.forEach((cd, i) => {
+      const p = PLACES[cd[0]];
+      html += '<button class="row" data-act="pick" data-id="' + cd[0] + '"' + (i === 0 ? ' style="outline:2px solid #C4714F"' : '') + '>' + catIcon(p.cat) + '<span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + ' · ' + cd[1] + '</span></span></button>';
+    });
+    return html + '</div><button class="btn tone center" data-act="toast" data-msg="Lets you type the name or handle">Not here — enter manually</button></div>';
+  }
+
+  // ── Sheets ───────────────────────────────────────────────────
+  function sheetHTML(sh) {
+    if (sh.type === 'igshare') {
+      const apps = [['Messages', '#34C759'], ['Mail', '#1E88E5'], ['seva', null], ['Notes', '#F5C542'], ['WhatsApp', '#25D366']];
+      return '<div class="sheet dark"><div class="grab"></div><div style="display:flex;gap:10px;align-items:center;background:#fff;border-radius:12px;padding:10px">' + avatar('M', 36) + '<div class="grow"><b style="font-size:14px">maria.colors on Instagram</b><span class="sub">instagram.com/p/Cx7…</span></div></div><div class="share-apps">' +
+        apps.map(a => a[1] ? '<button data-act="toast" data-msg="Pick seva for this demo"><span class="appi" style="background:' + a[1] + '"></span>' + a[0] + '</button>' :
+          '<button data-act="toseva"><span class="appi pulse" style="background:#FAF7F2;border:1px solid #E4DDD2"><img src="' + LOGO + '" alt="" style="width:34px"></span><b>seva</b></button>').join('') +
+        '</div><div class="settings">' + ['Copy link', 'Add to Reading List', 'Save to Files'].map(t => '<button data-act="toast" data-msg="Pick seva for this demo">' + t + '</button>').join('') + '</div></div>';
+    }
+    if (sh.type === 'saveform') {
+      const p = PLACES[sh.id], c = CAT[p.cat];
+      return '<div class="sheet"><div class="grab"></div><div style="display:flex;justify-content:space-between;align-items:center"><button class="ib text" data-act="closesheet" style="font-size:15px">Cancel</button><b>Add to my list</b><button class="ib text" data-act="dosave" data-id="' + sh.id + '" style="font-weight:700;font-size:15px">Save</button></div>' +
+        '<div style="display:flex;gap:12px;align-items:center">' + catIcon(p.cat) + '<div class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + '</span></div></div>' +
+        '<div class="seg"><button class="on" type="button">Been</button><button type="button" data-act="toast" data-msg="Saves it to Want to Try instead">Want to Try</button></div>' +
+        '<div class="field"><label for="rate">Your rating</label><div class="ratingrow"><input id="rate" type="range" min="0" max="10" step="0.5" value="9"><b id="rateval" style="font-variant-numeric:tabular-nums;min-width:28px;text-align:right">9</b></div></div>' +
+        '<div class="field"><label for="prov">Who did you see? (e.g. Maria)</label><input id="prov" value="Maria"></div>' +
+        '<div class="field"><label for="svc">Service (e.g. balayage, deep tissue)</label><input id="svc" value="Balayage"></div>' +
+        '<p class="muted" style="font-size:12px;margin-top:-6px">Friends who follow you see who you saw — that’s often the best recommendation.</p>' +
+        '<div class="field"><label for="note">Notes</label><input id="note" placeholder="Add a note (optional)"></div><p class="muted" style="font-size:12px;margin-top:-6px">Notes are private to you.</p></div>';
+    }
+    if (sh.type === 'sharecard') {
+      const been = myItems().filter(i => i.status === 'been').sort((a, b) => b.rating - a.rating).slice(0, 5);
+      return '<div class="sheet"><div class="grab"></div><div style="display:flex;justify-content:space-between;align-items:center"><span style="width:60px"></span><b>Share your top list</b><button class="ib text" data-act="closesheet" style="font-size:15px;font-weight:600">Done</button></div>' +
+        '<div class="sharecard"><div style="display:flex;align-items:center;gap:8px"><img src="' + LOGO + '" alt="" style="width:22px"><b>seva</b></div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.1">My top spots</div><div style="display:flex;flex-direction:column;gap:10px">' +
+        been.map((i, n) => { const p = PLACES[i.id], c = CAT[p.cat]; return '<div style="display:flex;gap:10px;align-items:center;background:' + c.color + '1A;border-radius:12px;padding:8px 10px"><span class="rank" style="background:' + c.color + ';width:22px;height:22px;font-size:12px">' + (n + 1) + '</span><span class="grow"><span style="font-weight:600;font-size:13px;line-height:1.2">' + esc(p.name) + '</span>' + (i.provider ? '<span style="font-size:11px;color:#7A7570">ask for ' + esc(i.provider) + '</span>' : '') + '</span><b style="font-size:13px">' + fmt(i.rating) + '</b></div>'; }).join('') +
+        '</div><div style="margin-top:auto;font-size:12px;color:#7A7570">@alexr on seva</div></div>' +
+        '<button class="btn fill" data-act="toast" data-msg="Opens the share sheet, ready for Stories">' + ic('share', 18) + 'Share</button></div>';
+    }
+    if (sh.type === 'qr') {
+      const p = PLACES[sh.id];
+      return '<div class="sheet"><div class="grab"></div><div style="display:flex;justify-content:space-between;align-items:center"><span style="width:60px"></span><b>Share this place</b><button class="ib text" data-act="closesheet" style="font-size:15px;font-weight:600">Done</button></div>' +
+        '<div class="qrcard"><div style="display:flex;align-items:center;gap:8px"><img src="' + LOGO + '" alt="" style="width:22px"><b>Find us on seva</b></div><div style="font-size:21px;font-weight:700">' + esc(p.name) + '</div>' + catPill(p.cat) + '<div class="qr">' + qrSVG('https://findseva.app/') + '</div><span class="sub">Save, recommend and book</span></div>' +
+        '<p class="muted" style="text-align:center">Work here? Add this link to your Instagram bio or print the QR code for your front desk. Clients can save you, recommend you to friends and book in one tap.</p>' +
+        '<button class="btn fill" data-act="toast" data-msg="Opens the share sheet with the link">' + ic('link', 18) + 'Share link</button><button class="btn tone center" data-act="toast" data-msg="Shares the QR card as an image">' + ic('qr', 18) + 'Share QR code</button><button class="btn tone center" data-act="toast" data-msg="Copied">' + ic('copy', 18) + 'Copy link</button></div>';
+    }
+    if (sh.type === 'privacy') {
+      const opt = (priv, icon, title, detail) => '<button class="row" data-act="privpick" data-v="' + (priv ? '1' : '') + '" style="align-items:flex-start;' + (S.privPick === priv ? 'outline:1.5px solid #2B2A27' : '') + '">' +
+        '<span style="display:flex;padding-top:2px">' + ic(icon, 22) + '</span><span class="grow"><span style="font-weight:600">' + title + '</span><span class="sub">' + detail + '</span></span>' +
+        '<span style="display:flex">' + ic(S.privPick === priv ? 'check' : 'x', 18, S.privPick === priv ? '#2B2A27' : 'transparent', 2.4) + '</span></button>';
+      return '<div class="sheet"><div class="grab"></div><div style="font-size:22px;font-weight:700">Who can see your list?</div><p class="muted">You can change this anytime in Profile. Your notes are always private.</p>' +
+        opt(false, 'globe', 'Public', 'Anyone on seva can see your list and follow you.') +
+        opt(true, 'lock', 'Private', 'People ask to follow you, and only those you approve see your list.') +
+        '<button class="btn fill" data-act="privsave">Continue</button></div>';
+    }
+    if (sh.type === 'cluster') {
+      return '<div class="sheet"><div class="grab"></div><b style="text-align:center">3 places here</b><div class="list-gap">' + ['saffron', 'petal', 'halo'].map(id => { const p = PLACES[id]; return '<button class="row" data-act="place" data-id="' + id + '">' + catIcon(p.cat) + '<span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + '</span></span></button>'; }).join('') + '</div></div>';
+    }
+    return '';
+  }
+  function qrSVG(text) {
+    if (typeof window.qrcode !== 'function') return '<div class="sub">QR code</div>';
+    const q = window.qrcode(0, 'M'); q.addData(text); q.make();
+    const n = q.getModuleCount(); let d = '';
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += 'M' + c + ' ' + r + 'h1v1h-1z';
+    return '<svg viewBox="-2 -2 ' + (n + 4) + ' ' + (n + 4) + '" shape-rendering="crispEdges" role="img" aria-label="QR code for seva"><rect x="-2" y="-2" width="' + (n + 4) + '" height="' + (n + 4) + '" fill="#fff"/><path d="' + d + '" fill="#1C1C1A"/></svg>';
+  }
+
+  // ── Render ───────────────────────────────────────────────────
+  function render(scrollTop) {
+    const view = $('view'), tabs = $('tabs');
+    const top = S.stack[S.stack.length - 1];
+    const full = S.login || (top && (top.type === 'ig' || top.type === 'detect'));
+    let html;
+    if (S.login) html = screenLogin();
+    else if (top) html = top.type === 'place' ? screenPlace(top.id) : top.type === 'friend' ? screenFriend(top.id) : top.type === 'activity' ? screenActivity() : top.type === 'ig' ? screenIG() : screenDetect();
+    else html = S.tab === 'list' ? screenList() : S.tab === 'discover' ? screenDiscover() : S.tab === 'friends' ? screenFriends() : screenProfile();
+    const keep = view.scrollTop;
+    view.innerHTML = html;
+    view.scrollTop = scrollTop ? 0 : keep;
+    tabs.hidden = !!full;
+    const T = [['list', 'bookmark', 'My List'], ['discover', 'search', 'Discover'], ['friends', 'people', 'Friends'], ['profile', 'person', 'Profile']];
+    tabs.innerHTML = T.map(t => '<button data-act="tab" data-v="' + t[0] + '" class="' + (S.tab === t[0] ? 'on' : '') + '" aria-current="' + (S.tab === t[0] ? 'page' : 'false') + '">' + ic(t[1], 24, null, S.tab === t[0] ? 2.2 : 1.7) + t[2] + (t[0] === 'friends' ? '<span class="badge">2</span>' : '') + '</button>').join('');
+    renderSheet();
+  }
+  function renderSheet() {
+    const host = $('sheetHost');
+    host.innerHTML = S.sheet ? '<div class="scrim" data-act="scrim">' + sheetHTML(S.sheet) + '</div>' : '';
+    const r = $('rate');
+    if (r) r.addEventListener('input', () => { $('rateval').textContent = fmt(parseFloat(r.value)); });
+  }
+
+  // ── Interactions ─────────────────────────────────────────────
+  $('screen').addEventListener('click', e => {
+    const el = e.target.closest('[data-act]');
+    if (!el) return;
+    const a = el.dataset.act, id = el.dataset.id, v = el.dataset.v;
+    if (a === 'scrim') { if (e.target === el) closeSheet(); return; }
+    switch (a) {
+      case 'signin': S.login = false; S.tab = 'list'; S.privPick = false; render(true); openSheet({ type: 'privacy' }); break;
+      case 'privpick': S.privPick = !!v; renderSheet(); break;
+      case 'privsave': S.isPrivate = S.privPick; closeSheet(); toast(S.isPrivate ? 'Your profile is private' : 'Your profile is public'); if (chapter === 0) setTimeout(() => setChapter(1), 700); break;
+      case 'privtoggle': S.isPrivate = !S.isPrivate; render(); toast(S.isPrivate ? 'Your profile is private' : 'Your profile is public'); break;
+      case 'follow': {
+        const f = FRIENDS[id];
+        if (S.following[id]) { S.following[id] = false; toast('Unfollowed ' + f.name.split(' ')[0]); }
+        else if (f.private) { S.requested[id] = !S.requested[id]; toast(S.requested[id] ? 'Request sent to ' + f.name.split(' ')[0] : 'Request canceled'); }
+        else { S.following[id] = true; toast('Following ' + f.name.split(' ')[0]); }
+        // (Leah approves you back a moment later, so the demo shows the full loop)
+        if (id === 'leah' && S.requested.leah) setTimeout(() => { S.requested.leah = false; S.following.leah = true; toast('Leah approved you. 86% taste match'); render(); }, 2200);
+        render();
+        break;
+      }
+      case 'tab': S.tab = v; S.stack = []; S.sheet = null; render(true); break;
+      case 'back': pop(); break;
+      case 'listtab': S.listTab = v; render(); break;
+      case 'filter': S.filter = v || null; render(); break;
+      case 'dfilter': S.dfilter = v || null; render(); break;
+      case 'place': push({ type: 'place', id: id }); break;
+      case 'friend': push({ type: 'friend', id: id }); break;
+      case 'activity': push({ type: 'activity' }); break;
+      case 'cluster': openSheet({ type: 'cluster' }); break;
+      case 'sharecard': openSheet({ type: 'sharecard' }); break;
+      case 'qr': openSheet({ type: 'qr', id: id }); break;
+      case 'closesheet': closeSheet(); break;
+      case 'igshare': openSheet({ type: 'igshare' }); break;
+      case 'toseva': S.sheet = null; S.detected = false; S.stack = [{ type: 'detect' }]; render(true); break;
+      case 'pick': openSheet({ type: 'saveform', id: id }); break;
+      case 'save': openSheet({ type: 'saveform', id: id }); break;
+      case 'logvisit': openSheet({ type: 'saveform', id: id }); break;
+      case 'dosave': {
+        const rating = parseFloat(($('rate') || {}).value || 9);
+        const prov = (($('prov') || {}).value || '').trim(), svc = (($('svc') || {}).value || '').trim();
+        S.saved[id] = { status: 'been', rating: rating, provider: prov || null, service: svc || null, fresh: true, date: 'Today' };
+        S.sheet = null; S.stack = []; S.tab = 'list'; S.listTab = 'been'; S.filter = null; render(true); toast('Added to your list');
+        break;
+      }
+      case 'leahapprove': S.leahReq = 'approved'; render(); toast('Leah can now see your list'); break;
+      case 'leahdecline': S.leahReq = 'declined'; render(); toast('Request declined'); break;
+      case 'join': S.joined = true; render(); toast('We’ll let you know'); break;
+      case 'addmanual': toast('Add a place by name, handle or address'); break;
+      case 'toast': toast(el.dataset.msg); break;
+    }
+  });
+
+  // ── Tour ─────────────────────────────────────────────────────
+  function setChapter(i, quiet) {
+    chapter = Math.max(0, Math.min(CHAPTERS.length - 1, i));
+    if (!quiet) CHAPTERS[chapter].go();
+    document.querySelectorAll('#chapters button').forEach((b, n) => b.setAttribute('aria-current', n === chapter ? 'step' : 'false'));
+    $('hint').innerHTML = '<b>' + (chapter + 1) + ' of ' + CHAPTERS.length + '</b><span><b style="font-weight:600">' + esc(CHAPTERS[chapter].t) + '.</b> ' + esc(CHAPTERS[chapter].hint) + '</span>';
+    $('prev').disabled = chapter === 0;
+    $('next').textContent = chapter === CHAPTERS.length - 1 ? 'Start over' : 'Next';
+  }
+  $('chapters').innerHTML = CHAPTERS.map((c, i) => '<li><button type="button" data-ch="' + i + '"><span class="n">' + String(i + 1).padStart(2, '0') + '</span><span class="t">' + esc(c.t) + '</span><span class="d">' + esc(c.d) + '</span></button></li>').join('');
+  $('chapters').addEventListener('click', e => { const b = e.target.closest('[data-ch]'); if (b) setChapter(+b.dataset.ch); });
+  $('prev').addEventListener('click', () => setChapter(chapter - 1));
+  $('next').addEventListener('click', () => setChapter(chapter === CHAPTERS.length - 1 ? 0 : chapter + 1));
+
+  const LOGO = 'data:image/png;base64,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';
+  $('logo').src = LOGO;
+  S = { saved: {} };
+  setChapter(0);
+})();
+</script>
+
 </body>
 </html>
