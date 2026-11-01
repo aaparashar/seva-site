@@ -120,6 +120,14 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
 .catpill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 12px; width: fit-content; }
 .interest { border: 1px solid #DDD6CB; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .card { background: var(--surface); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.drow-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.drow-h h3 { margin: 0; font-size: 16px; }
+.link { background: none; border: 0; color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 6px 0; }
+.dcard { flex: none; width: 138px; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; color: var(--tx); display: flex; flex-direction: column; gap: 5px; font: inherit; }
+.dthumb { height: 62px; border-radius: 12px; display: grid; place-items: center; position: relative; }
+.drate { position: absolute; top: 6px; right: 6px; background: var(--bg); color: var(--tx); border-radius: 10px; padding: 1px 7px; font: 600 13px Georgia, 'New York', serif; }
+.dname { font: 600 14px Georgia, 'New York', serif; line-height: 1.25; }
+.dpick { flex: none; width: 180px; min-height: 120px; text-align: left; border: 1px solid #E8D6C7; background: #F4E8DE; border-radius: 16px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; color: var(--tx); font: inherit; }
 .card h3 { margin: 0; font-size: 17px; }
 .btn { border: 0; border-radius: 12px; padding: 12px 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; font-size: 15px; }
 .btn.fill { background: var(--ink); color: #FAF7F2; }
@@ -298,6 +306,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     ritual: { name: 'Ritual Facial Bar', cat: 'face', area: 'Lafayette St, NoHo', x: 50, y: 33 },
     ember: { name: 'Ember Sauna House', cat: 'body', area: 'Grand St, Lower East Side', x: 72, y: 70 }
   };
+  // Typical price people logged ($ to $$$$), for the Budget-friendly row
+  const PRICE = { arlo: 1, gloss: 1, lune: 2, petal: 2, halo: 2, ember: 2, juniper: 3, saffron: 3, kinship: 3, ritual: 3, knead: 3, stillwater: 3 };
   const FRIENDS = {
     priya: { name: 'Priya Shah', user: 'priya', match: 92, followers: 41 },
     maya: { name: 'Maya Chen', user: 'maya.c', match: 78, followers: 27 },
@@ -335,7 +345,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     { t: 'Save from Instagram', d: 'See a great stylist on Instagram? Share the post to seva and it finds the place for you.', hint: 'Tap the share arrow on the post, then pick seva.', go: () => reset({ tab: 'list', stack: [{ type: 'ig' }] }) },
     { t: 'Your list', d: 'Places you’ve been, ranked by your rating within each category, and places you want to try.', hint: 'Switch between Been and Want to Try, filter by category, or tap a place.', go: () => reset({ tab: 'list' }) },
     { t: 'A place, through your friends', d: 'Who to ask for, what friends booked and rated, and Book buttons for the place’s site, phone, Instagram or directions.', hint: 'Scroll the profile. "Who to ask for" is the part people love.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'juniper' }] }) },
-    { t: 'Discover nearby', d: 'A map of salons, spas and studios around you, color-coded by category.', hint: 'Tap a pin or a category chip.', go: () => reset({ tab: 'discover' }) },
+    { t: 'Discover', d: 'A map of salons, spas and studios around you, plus seva picks and rows of places loved by friends, budget-friendly and top rated.', hint: 'Tap a pin, a category chip, or a place in a row.', go: () => reset({ tab: 'discover' }) },
     { t: 'Friends and taste match', d: 'Follow friends to browse their lists. Taste match shows how closely your ratings agree.', hint: 'Tap Priya to open her list.', go: () => reset({ tab: 'friends' }) },
     { t: 'People you admire', d: 'Public profiles show anyone where someone goes, down to who they ask for. Verified people get a check. Private profiles approve followers.', hint: 'Open Sienna under People to follow, no follow needed. Then try Devon, who is private.', go: () => reset({ tab: 'friends' }) },
     { t: 'Activity', d: 'Hear when a friend goes somewhere on your Want to Try list, and approve follow requests, then follow back.', hint: 'Approve Leah, then tap Follow back. She\u2019s private, so she approves you too.', go: () => reset({ tab: 'friends', stack: [{ type: 'activity' }] }) },
@@ -529,12 +539,43 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
       html += '<button class="pin" style="left:' + p.x + '%;top:' + (p.y + 14) + '%" data-act="place" data-id="' + id + '" aria-label="' + esc(p.name) + '"><span class="dot" style="background:' + c.color + '">' + ic(p.cat, 16, '#fff', 2) + '</span><span class="stem"></span></button>';
     });
     if (!S.dfilter) html += '<button class="pin" style="left:28%;top:86%" data-act="cluster" aria-label="3 places"><span class="dot" style="background:#2B2A27">3</span><span class="stem"></span></button>';
-    html += '</div><div style="display:flex;justify-content:space-between;align-items:baseline"><h3 style="margin:0;font-size:17px">' + (S.dfilter ? CAT[S.dfilter].label : 'Nearby') + '</h3><span class="sub">' + ids.length + ' places</span></div><div class="list-gap">';
+    html += '</div>' + discoverRows(ids) + '<div style="display:flex;justify-content:space-between;align-items:baseline"><h3 style="margin:0;font-size:17px">On the map</h3><span class="sub">' + ids.length + ' places</span></div><div class="list-gap">';
     ids.slice(0, 6).forEach(id => {
       const p = PLACES[id], n = friendsOn(id).length;
       html += '<button class="row" data-act="place" data-id="' + id + '">' + catIcon(p.cat) + '<span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + '</span>' + (n ? '<span class="pill">' + n + (n === 1 ? ' friend' : ' friends') + ' saved this</span>' : '') + '</span></button>';
     });
     return html + '</div></div>';
+  }
+  // Rows under the map, ranked from saves: what the app's Discover panel shows.
+  function avgRating(id) {
+    const r = VISITS.filter(v => v.place === id && v.rating).map(v => v.rating);
+    return r.length ? r.reduce((a, b) => a + b, 0) / r.length : null;
+  }
+  function dcard(id, detail) {
+    const p = PLACES[id], c = CAT[p.cat], r = avgRating(id);
+    return '<button class="dcard" data-act="place" data-id="' + id + '"><span class="dthumb" style="background:' + c.color + '33;color:' + c.color + '">' + ic(p.cat, 22) +
+      (r ? '<span class="drate">' + r.toFixed(1) + '</span>' : '') + '</span><span class="dname">' + esc(p.name) + '</span><span class="sub" style="font-size:12px">' + esc(detail) + '</span></button>';
+  }
+  function drow(icon, title, sub, cards) {
+    if (cards.length < 3) return '';
+    return '<div style="display:flex;flex-direction:column;gap:8px"><div class="drow-h"><h3>' + esc(title) + '</h3><button class="link" data-act="toast" data-msg="Opens the full list">See all</button></div><span class="sub" style="margin-top:-6px">' + esc(sub) + '</span><div class="chips" style="gap:12px">' + cards.join('') + '</div></div>';
+  }
+  function discoverRows(ids) {
+    const loved = ids.map(id => ({ id, fs: friendsOn(id).filter(v => v.rating >= 8) })).filter(x => x.fs.length)
+      .sort((a, b) => b.fs.length - a.fs.length)
+      .map(x => dcard(x.id, FRIENDS[x.fs[0].friend].name.split(' ')[0] + (x.fs.length > 1 ? ' + ' + (x.fs.length - 1) : '') + ' loved it'));
+    const budget = ids.filter(id => PRICE[id] <= 2).sort((a, b) => (avgRating(b) || 0) - (avgRating(a) || 0))
+      .map(id => dcard(id, '$'.repeat(PRICE[id]) + (avgRating(id) ? ' · ' + avgRating(id).toFixed(1) : '')));
+    const top = ids.filter(id => VISITS.filter(v => v.place === id && v.rating).length >= 2).sort((a, b) => avgRating(b) - avgRating(a))
+      .map(id => dcard(id, VISITS.filter(v => v.place === id).length + ' saves'));
+    const picks = S.dfilter && S.dfilter !== 'hair' ? '' :
+      '<div style="display:flex;flex-direction:column;gap:8px"><div class="drow-h"><h3>seva picks</h3></div><span class="sub" style="margin-top:-6px">Lists from the seva team</span><div class="chips" style="gap:12px">' +
+      '<button class="dpick" data-act="toast" data-msg="A list the seva team made"><span style="display:flex;gap:4px">' + catIcon('hair', 14) + catIcon('hair', 14) + '</span><span class="dname" style="font-size:16px">Best blowouts in Nolita</span><span class="sub" style="font-size:12px">New York · 4 places</span></button>' +
+      '<button class="dpick" data-act="toast" data-msg="A list the seva team made"><span style="display:flex;gap:4px">' + catIcon('nails', 14) + catIcon('face', 14) + '</span><span class="dname" style="font-size:16px">Under $50 and worth it</span><span class="sub" style="font-size:12px">New York · 6 places</span></button></div></div>';
+    return picks +
+      drow('people', 'Loved by your friends', 'Rated 8+ by people you follow', loved) +
+      drow('tag', 'Budget-friendly', '$ and $$ spots, best rated first', budget) +
+      drow('star', 'Top rated', 'Highest rated by seva members', top);
   }
   function mapSVG() {
     let s = '<svg viewBox="0 0 340 330" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true" style="position:absolute;inset:0"><rect width="340" height="330" fill="#EEE9E0"/>' +
@@ -568,7 +609,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
       html += '<p class="muted" style="font-size:12px;display:flex;gap:6px;align-items:center;margin-top:-4px">' + dots(2) + '<span>Rate 3 of the same places to unlock your taste match.</span></p>';
     }
     html += '</div><div class="card"><h3>Skip the reviews. Ask your people.</h3><p class="muted">Add friends whose taste you trust and see where they go, and who they ask for.</p><div style="display:flex;gap:8px">' +
-      '<button class="btn tone center" data-act="toast" data-msg="Finds friends from your contacts">' + ic('contacts', 18) + 'From contacts</button><button class="btn fill" data-act="toast" data-msg="Opens the share sheet with your invite link">' + ic('share', 18) + 'Invite</button></div>' +
+      '<button class="btn tone center" data-act="toast" data-msg="Finds friends from your contacts">' + ic('contacts', 18) + 'Contacts</button><button class="btn fill" data-act="toast" data-msg="Opens the share sheet with your invite link">' + ic('share', 18) + 'Invite</button></div>' +
       '</div>';
     return html + '</div>';
   }
