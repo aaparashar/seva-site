@@ -539,7 +539,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
       html += '<button class="pin" style="left:' + p.x + '%;top:' + (p.y + 14) + '%" data-act="place" data-id="' + id + '" aria-label="' + esc(p.name) + '"><span class="dot" style="background:' + c.color + '">' + ic(p.cat, 16, '#fff', 2) + '</span><span class="stem"></span></button>';
     });
     if (!S.dfilter) html += '<button class="pin" style="left:28%;top:86%" data-act="cluster" aria-label="3 places"><span class="dot" style="background:#2B2A27">3</span><span class="stem"></span></button>';
-    html += '</div>' + discoverRows(ids) + '<div style="display:flex;justify-content:space-between;align-items:baseline"><h3 style="margin:0;font-size:17px">On the map</h3><span class="sub">' + ids.length + ' places</span></div><div class="list-gap">';
+    html += '</div>' + discoverRows(ids) + '<div style="display:flex;justify-content:space-between;align-items:baseline"><h3 style="margin:0;font-size:17px">Closest to you</h3><span class="sub">' + ids.length + ' places</span></div><div class="list-gap">';
     ids.slice(0, 6).forEach(id => {
       const p = PLACES[id], n = friendsOn(id).length;
       html += '<button class="row" data-act="place" data-id="' + id + '">' + catIcon(p.cat) + '<span class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + '</span>' + (n ? '<span class="pill">' + n + (n === 1 ? ' friend' : ' friends') + ' saved this</span>' : '') + '</span></button>';
