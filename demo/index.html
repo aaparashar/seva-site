@@ -154,7 +154,8 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
 .ratingrow { display: flex; align-items: center; gap: 12px; }
 .ratingrow input { flex: 1; accent-color: var(--ink); }
 .empty { text-align: center; padding: 40px 10px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-.map { position: relative; height: 330px; margin: 0 -18px; overflow: hidden; }
+.map { position: relative; height: 210px; border-radius: 16px; border: 1px solid #E8D6C7; overflow: hidden; cursor: pointer; }
+.expandbtn { position: absolute; right: 10px; bottom: 10px; width: 40px; height: 40px; border-radius: 20px; border: 0; background: rgba(255,255,255,.92); display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,.15); cursor: pointer; color: var(--ink); font-size: 16px; }
 .pin { position: absolute; transform: translate(-50%, -100%); border: 0; background: none; cursor: pointer; padding: 0; display: flex; flex-direction: column; align-items: center; }
 .pin .dot { width: 32px; height: 32px; border-radius: 16px; display: grid; place-items: center; border: 2.5px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); color: #fff; font-weight: 700; font-size: 13px; }
 .pin .stem { width: 2px; height: 7px; background: #fff; }
@@ -345,7 +346,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     { t: 'Save from Instagram', d: 'See a great stylist on Instagram? Share the post to seva and it finds the place for you.', hint: 'Tap the share arrow on the post, then pick seva.', go: () => reset({ tab: 'list', stack: [{ type: 'ig' }] }) },
     { t: 'Your list', d: 'Places you’ve been, ranked by your rating within each category, and places you want to try.', hint: 'Switch between Been and Want to Try, filter by category, or tap a place.', go: () => reset({ tab: 'list' }) },
     { t: 'A place, through your friends', d: 'Who to ask for, what friends booked and rated, and Book buttons for the place’s site, phone, Instagram or directions.', hint: 'Scroll the profile. "Who to ask for" is the part people love.', go: () => reset({ tab: 'list', stack: [{ type: 'place', id: 'juniper' }] }) },
-    { t: 'Discover', d: 'A map of salons, spas and studios around you, plus seva picks and rows of places loved by friends, budget-friendly and top rated.', hint: 'Tap a pin, a category chip, or a place in a row.', go: () => reset({ tab: 'discover' }) },
+    { t: 'Discover', d: 'A map of what’s near you that opens full screen, then seva picks and rows of places loved by friends, budget-friendly and top rated.', hint: 'Tap the map to open it full screen, or a place in a row.', go: () => reset({ tab: 'discover' }) },
     { t: 'Friends and taste match', d: 'Follow friends to browse their lists. Taste match shows how closely your ratings agree.', hint: 'Tap Priya to open her list.', go: () => reset({ tab: 'friends' }) },
     { t: 'People you admire', d: 'Public profiles show anyone where someone goes, down to who they ask for. Verified people get a check. Private profiles approve followers.', hint: 'Open Sienna under People to follow, no follow needed. Then try Devon, who is private.', go: () => reset({ tab: 'friends' }) },
     { t: 'Activity', d: 'Hear when a friend goes somewhere on your Want to Try list, and approve follow requests, then follow back.', hint: 'Approve Leah, then tap Follow back. She\u2019s private, so she approves you too.', go: () => reset({ tab: 'friends', stack: [{ type: 'activity' }] }) },
@@ -533,12 +534,13 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
     const ids = Object.keys(PLACES).filter(id => !S.dfilter || PLACES[id].cat === S.dfilter);
     let html = '<div class="pad" style="gap:12px"><div class="searchbar">' + ic('search', 18) + '<span>Search salons, spas or a neighborhood</span></div>' +
       '<div class="chips">' + chip('All', null, S.dfilter, 'dfilter') + Object.keys(CAT).map(c => chip(CAT[c].label, c, S.dfilter, 'dfilter')).join('') + '</div>' +
-      '<div class="map">' + mapSVG() + '<button class="areabtn" data-act="toast" data-msg="Searching this area">' + ic('search', 14, null, 2.2) + 'Search this area</button>';
+      '<div class="drow-h"><div><h3 style="font-family:Georgia,\'New York\',serif;font-size:19px">Near you</h3><span class="sub">' + ids.length + ' places around you</span></div><button class="link" data-act="toast" data-msg="Opens the full map: pins, Search this area, and a list of places in view">Open map</button></div>' +
+      '<div class="map">' + mapSVG() + '<button class="expandbtn" data-act="toast" data-msg="Opens the full map" aria-label="Expand map">⤢</button>';
     ids.forEach(id => {
       const p = PLACES[id], c = CAT[p.cat];
-      html += '<button class="pin" style="left:' + p.x + '%;top:' + (p.y + 14) + '%" data-act="place" data-id="' + id + '" aria-label="' + esc(p.name) + '"><span class="dot" style="background:' + c.color + '">' + ic(p.cat, 16, '#fff', 2) + '</span><span class="stem"></span></button>';
+      html += '<button class="pin" style="left:' + p.x + '%;top:' + Math.round(p.y * 0.8 + 2) + '%" data-act="place" data-id="' + id + '" aria-label="' + esc(p.name) + '"><span class="dot" style="background:' + c.color + '">' + ic(p.cat, 16, '#fff', 2) + '</span><span class="stem"></span></button>';
     });
-    if (!S.dfilter) html += '<button class="pin" style="left:28%;top:86%" data-act="cluster" aria-label="3 places"><span class="dot" style="background:#2B2A27">3</span><span class="stem"></span></button>';
+    if (!S.dfilter) html += '<button class="pin" style="left:28%;top:62%" data-act="cluster" aria-label="3 places"><span class="dot" style="background:#2B2A27">3</span><span class="stem"></span></button>';
     html += '</div>' + discoverRows(ids) + '<div style="display:flex;justify-content:space-between;align-items:baseline"><h3 style="margin:0;font-size:17px">Closest to you</h3><span class="sub">' + ids.length + ' places</span></div><div class="list-gap">';
     ids.slice(0, 6).forEach(id => {
       const p = PLACES[id], n = friendsOn(id).length;
@@ -568,10 +570,10 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
       .map(id => dcard(id, '$'.repeat(PRICE[id]) + (avgRating(id) ? ' · ' + avgRating(id).toFixed(1) : '')));
     const top = ids.filter(id => VISITS.filter(v => v.place === id && v.rating).length >= 2).sort((a, b) => avgRating(b) - avgRating(a))
       .map(id => dcard(id, VISITS.filter(v => v.place === id).length + ' saves'));
-    const picks = S.dfilter && S.dfilter !== 'hair' ? '' :
+    const picks = S.dfilter && S.dfilter !== 'nails' && S.dfilter !== 'face' ? '' :
       '<div style="display:flex;flex-direction:column;gap:8px"><div class="drow-h"><h3>seva picks</h3></div><span class="sub" style="margin-top:-6px">Lists from the seva team</span><div class="chips" style="gap:12px">' +
-      '<button class="dpick" data-act="toast" data-msg="A list the seva team made"><span style="display:flex;gap:4px">' + catIcon('hair', 14) + catIcon('hair', 14) + '</span><span class="dname" style="font-size:16px">Best blowouts in Nolita</span><span class="sub" style="font-size:12px">New York · 4 places</span></button>' +
-      '<button class="dpick" data-act="toast" data-msg="A list the seva team made"><span style="display:flex;gap:4px">' + catIcon('nails', 14) + catIcon('face', 14) + '</span><span class="dname" style="font-size:16px">Under $50 and worth it</span><span class="sub" style="font-size:12px">New York · 6 places</span></button></div></div>';
+      '<button class="dpick" data-act="toast" data-msg="A seva pick: the full list, crediting the article it’s based on"><span style="display:flex;gap:4px">' + catIcon('nails', 14) + catIcon('nails', 14) + '</span><span class="dname" style="font-size:16px">Nail salons worth the hype</span><span class="sub" style="font-size:12px">via Byrdie · 9 places</span></button>' +
+      '<button class="dpick" data-act="toast" data-msg="A seva pick: the full list, crediting the article it’s based on"><span style="display:flex;gap:4px">' + catIcon('face', 14) + catIcon('face', 14) + '</span><span class="dname" style="font-size:16px">Facials editors swear by</span><span class="sub" style="font-size:12px">via PureWow · 6 places</span></button></div></div>';
     return picks +
       drow('people', 'Loved by your friends', 'Rated 8+ by people you follow', loved) +
       drow('tag', 'Budget-friendly', '$ and $$ spots, best rated first', budget) +
