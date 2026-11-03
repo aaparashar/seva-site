@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>seva</title>
-<meta name="description" content="seva — your people, your wellness.">
+<meta name="description" content="seva: your people, your wellness.">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
@@ -34,14 +34,14 @@
   <img src="seva-mark.png" alt="seva logo" width="96">
   <h1>seva</h1>
   <div class="rule"></div>
-  <p class="tagline">Your people. Your wellness.</p>
+  <p class="tagline">your people. your wellness.</p>
   <form id="waitlist" novalidate>
     <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
     <input type="email" name="email" placeholder="you@email.com" autocomplete="email" aria-label="Email address" required>
-    <button type="submit">Join the waitlist</button>
+    <button type="submit">join the waitlist</button>
   </form>
-  <p class="fine" id="waitlist-note" role="status" aria-live="polite">Beta testing in NYC.</p>
-  <nav><a href="terms.html">Terms of Use</a> <a href="privacy.html">Privacy Policy</a> <a href="mailto:hello@findseva.app">Contact</a></nav>
+  <p class="fine" id="waitlist-note" role="status" aria-live="polite">beta testing in NYC.</p>
+  <nav><a href="terms.html">terms of use</a> <a href="privacy.html">privacy policy</a> <a href="mailto:hello@findseva.app">contact</a></nav>
 </main>
 <script>
   // Posts to the join-waitlist edge function (supabase/functions/join-waitlist).
@@ -60,9 +60,9 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var email = form.email.value.trim();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("That email doesn't look right.", true); return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("that email doesn't look right.", true); return; }
       button.disabled = true;
-      button.textContent = "Joining…";
+      button.textContent = "joining…";
       fetch("https://fefpdelkahctwklhlshl.supabase.co/functions/v1/join-waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,11 +70,11 @@
       }).then(function (r) {
         if (!r.ok) throw r.status;
         form.style.display = "none";
-        say("You're on the list. We'll be in touch.");
+        say("you're on the list. we'll be in touch.");
       }).catch(function (status) {
         button.disabled = false;
-        button.textContent = "Join the waitlist";
-        say(status === 429 ? "Lots of signups right now. Try again in a bit." : "Couldn't add you. Try again?", true);
+        button.textContent = "join the waitlist";
+        say(status === 429 ? "lots of signups right now. try again in a bit." : "couldn't add you. try again?", true);
       });
     });
   })();
