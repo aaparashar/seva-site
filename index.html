@@ -16,6 +16,17 @@
   p { color: #7A7570; margin: 0 0 28px; }
   a { color: #1C1C1A; }
   nav a { margin: 0 10px; font-size: 14px; }
+  .tagline { margin-bottom: 22px; }
+  form { display: flex; flex-wrap: wrap; gap: 8px; max-width: 380px; margin: 0 auto 10px; }
+  input[type=email] { flex: 1 1 200px; min-width: 0; padding: 13px 14px; border: 1px solid #E8D6C7; border-radius: 12px;
+                      background: #fff; color: #1C1C1A; font: inherit; }
+  input[type=email]:focus { outline: 2px solid #2B2A27; outline-offset: 1px; }
+  button { padding: 13px 18px; border: 0; border-radius: 12px; background: #2B2A27; color: #fff;
+           font: inherit; font-weight: 600; white-space: nowrap; cursor: pointer; flex: 1 0 auto; }
+  button:disabled { opacity: .6; cursor: default; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .fine { font-size: 14px; color: #6B655E; margin: 0 0 28px; }
+  .fine.error { color: #B4483C; }
 </style>
 </head>
 <body>
@@ -23,8 +34,50 @@
   <img src="seva-mark.png" alt="seva logo" width="96">
   <h1>seva</h1>
   <div class="rule"></div>
-  <p>Your people. Your wellness.</p>
+  <p class="tagline">Your people. Your wellness.</p>
+  <form id="waitlist" novalidate>
+    <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
+    <input type="email" name="email" placeholder="you@email.com" autocomplete="email" aria-label="Email address" required>
+    <button type="submit">Join the waitlist</button>
+  </form>
+  <p class="fine" id="waitlist-note" role="status" aria-live="polite">Beta testing in NYC.</p>
   <nav><a href="terms.html">Terms of Use</a> <a href="privacy.html">Privacy Policy</a> <a href="mailto:hello@findseva.app">Contact</a></nav>
 </main>
+<script>
+  // Posts to the join-waitlist edge function (supabase/functions/join-waitlist).
+  // ?ref=ig_bio on the link records where the visitor came from.
+  (function () {
+    var form = document.getElementById("waitlist");
+    var note = document.getElementById("waitlist-note");
+    var button = form.querySelector("button");
+    var ref = (new URLSearchParams(location.search).get("ref") || "home").toLowerCase();
+
+    function say(text, isError) {
+      note.textContent = text;
+      note.className = isError ? "fine error" : "fine";
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("That email doesn't look right.", true); return; }
+      button.disabled = true;
+      button.textContent = "Joining…";
+      fetch("https://fefpdelkahctwklhlshl.supabase.co/functions/v1/join-waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, source: ref, website: form.website.value })
+      }).then(function (r) {
+        if (!r.ok) throw r.status;
+        form.style.display = "none";
+        say("You're on the list. We'll be in touch.");
+      }).catch(function (status) {
+        button.disabled = false;
+        button.textContent = "Join the waitlist";
+        say(status === 429 ? "Lots of signups right now. Try again in a bit." : "Couldn't add you. Try again?", true);
+      });
+    });
+  })();
+</script>
 </body>
 </html>
