@@ -323,13 +323,13 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
   };
   // What friends logged: status, provider, service, rating
   const VISITS = [
-    ['priya', 'juniper', 'been', 'Maria', 'Balayage', 9.5], ['maya', 'juniper', 'been', 'Maria', 'Cut & gloss', 9.0], ['jordan', 'juniper', 'been', 'Leo', 'Haircut', 8.0],
+    ['priya', 'juniper', 'been', 'Amani', 'Balayage', 9.5], ['maya', 'juniper', 'been', 'Amani', 'Cut & gloss', 9.0], ['jordan', 'juniper', 'been', 'Leo', 'Haircut', 8.0],
     ['priya', 'lune', 'been', 'Kim', 'Gel mani', 9.0], ['maya', 'lune', 'want'],
     ['jordan', 'stillwater', 'been', null, 'Contrast circuit', 9.0], ['priya', 'stillwater', 'been', null, 'Sauna + cold plunge', 8.5],
     ['maya', 'saffron', 'been', 'Dr. Ana', 'Hydrafacial', 8.5], ['priya', 'knead', 'been', 'Tomás', 'Deep tissue', 9.0],
     ['maya', 'kinship', 'been', 'Dr. Lin', 'Acupuncture', 8.8], ['jordan', 'gloss', 'been', 'Bea', 'Nail art', 8.2],
     ['maya', 'petal', 'been', 'Rae', 'Brow lamination', 8.5], ['priya', 'ritual', 'want'], ['jordan', 'ember', 'been', null, 'Sauna', 7.8],
-    ['sienna', 'juniper', 'been', 'Maria', 'Gloss + blowout', 9.5], ['sienna', 'halo', 'been', 'Kenji', 'Head spa', 9.2], ['sienna', 'saffron', 'been', 'Dr. Ana', 'Hydrafacial', 9.0],
+    ['sienna', 'juniper', 'been', 'Amani', 'Gloss + blowout', 9.5], ['sienna', 'halo', 'been', 'Kenji', 'Head spa', 9.2], ['sienna', 'saffron', 'been', 'Dr. Ana', 'Hydrafacial', 9.0],
     ['sienna', 'lune', 'been', 'Kim', 'Russian mani', 9.3], ['sienna', 'ember', 'been', null, 'Contrast circuit', 8.6],
     ['devon', 'arlo', 'been', 'Dev', 'Fade', 9.0], ['devon', 'knead', 'been', 'Tomás', 'Deep tissue', 8.8]
   ].map(v => ({ friend: v[0], place: v[1], status: v[2], provider: v[3] || null, service: v[4] || null, rating: v[5] || null }));
@@ -731,7 +731,7 @@ h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.025
         '<div style="display:flex;gap:12px;align-items:center">' + catIcon(p.cat) + '<div class="grow"><span class="name">' + esc(p.name) + '</span><span class="sub">' + esc(p.area) + '</span></div></div>' +
         '<div class="seg"><button class="on" type="button">Been</button><button type="button" data-act="toast" data-msg="Saves it to Want to Try instead">Want to Try</button></div>' +
         '<div class="field"><label for="rate">Your rating</label><div class="ratingrow"><input id="rate" type="range" min="0" max="10" step="0.5" value="9"><b id="rateval" style="font-variant-numeric:tabular-nums;min-width:28px;text-align:right">9</b></div></div>' +
-        '<div class="field"><label for="prov">Who did you see? (e.g. Maria)</label><input id="prov" value="Maria"></div>' +
+        '<div class="field"><label for="prov">Who did you see? (e.g. Jun)</label><input id="prov" value="Amani"></div>' +
         '<div class="field"><label for="svc">Service (e.g. balayage, deep tissue)</label><input id="svc" value="Balayage"></div>' +
         '<p class="muted" style="font-size:12px;margin-top:-6px">Friends who follow you see who you saw — that’s often the best recommendation.</p>' +
         '<div class="field"><label for="note">Notes</label><input id="note" placeholder="Add a note (optional)"></div><p class="muted" style="font-size:12px;margin-top:-6px">Notes are private to you.</p></div>';
